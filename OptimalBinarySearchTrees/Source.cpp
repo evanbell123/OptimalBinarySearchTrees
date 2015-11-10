@@ -1,25 +1,31 @@
 #include "Header.h";
-#include "Entry.cpp";
+
+//Inputs
+//n = the number of keys
+//p = array of real numbers indexed from 1 to n
+// where p[i] is the probability of searching for ith key
+// Outputs:
+// minavg = average search time for an optimal binary search tree
+// R = 2D array from which an optimal binary search tree can be constructed
+// The rows of R are indexed from 1 to n+1
+// The columns of R are indexed from 0 to n
+// R[i][j] is the index of the key in the root of an optimal binary search tree
+// containing the ith through jth keys
+
+void optimalBinarySearchTree(int n, const float p[], float& minavg, int R[][10]);
 
 int main()
 {
-	vector<vector<int> > buff;
+	
+}
 
-	for (int i = 0; i < 10; i++)
-	{
-		vector<int> temp; // create an array, don't work directly on buff yet.
-		for (int j = 0; j < 10; j++)
-			temp.push_back(i);
+void optimalBinarySearchTree(int n, const float p[], float& minavg, int R[][10])
+{
 
-		buff.push_back(temp); // Store the array in the buffer
-	}
+}
 
-	for (int i = 0; i < buff.size(); ++i)
-	{
-		for (int j = 0; j < buff[i].size(); ++j)
-			cout << buff[i][j];
-		cout << endl;
-	}
-
-	return 0;
+void optimalBinarySearchTree(int n, const float p[], float& minavg, int R[][10])
+{
+	int i, j, k, diagonal;
+	//float A[]
 }
