@@ -3,21 +3,30 @@
 class Entry
 {
 private:
-	int minWeight;
+	int minFrequency;
 	int minComparisons;
 	queue <int> optimalRoots;
 public:
-	Entry() : minWeight(0), minComparisons(0) {};
-	Entry(int mWeight) : minWeight(mWeight), minComparisons(0) {};
+	Entry() : minFrequency(0), minComparisons(0) {};
+	Entry(int mWeight) : minFrequency(mWeight), minComparisons(0) {};
+	Entry(int mWeight, int mComparisons) : minFrequency(mWeight), minComparisons(mComparisons) {};
+	Entry(int mWeight, int mComparisons, int opRoot) : minFrequency(mWeight), minComparisons(mComparisons)
+	{
+		addOptimalRoot(opRoot);
+	};
 
-	void setMinWeight(int mWeight) { minWeight = mWeight; };
+	int getMinFrequency() { return minFrequency; };
+	int getMinComparisons() { return minComparisons; };
+	queue <int> getOptimalRoots() { return optimalRoots; };
+
+	void setMinFrequency(int mWeight) { minFrequency = mWeight; };
 	void setMinComparisons(int mComparisons) { minComparisons = mComparisons; };
 	void addOptimalRoot(int root) { optimalRoots.push(root); };
 	void Entry::print()
 	{
 		queue <int> temp = optimalRoots;
 
-		cout << "Minimum Weight: " << minWeight << endl;
+		cout << "Minimum Frequency: " << minFrequency << endl;
 		cout << "Minimum Comparisons: " << minComparisons << endl;
 		cout << "Optimal Roots: ";
 		while (!temp.empty())
@@ -29,19 +38,3 @@ public:
 	};
 
 };
-/*
-void Entry::print()
-{
-	queue <int> temp = optimalRoots;
-
-	cout << "Minimum Weight: " << minWeight << endl;
-	cout << "Minimum Comparisons: " << minComparisons << endl;
-	cout << "Optimal Roots: ";
-	while (!temp.empty())
-	{
-		cout << temp.front() << " ";
-		temp.pop();
-	}
-	cout << endl;
-}
-*/
