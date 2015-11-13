@@ -14,6 +14,10 @@ public:
 	{
 		addOptimalRoot(opRoot);
 	};
+	Entry(int mWeight, int mComparisons, queue<int> opRoots) : minFrequency(mWeight), minComparisons(mComparisons)
+	{
+		swap(optimalRoots, opRoots);
+	};
 
 	int getMinFrequency() { return minFrequency; };
 	int getMinComparisons() { return minComparisons; };
@@ -21,6 +25,9 @@ public:
 
 	void setMinFrequency(int mWeight) { minFrequency = mWeight; };
 	void setMinComparisons(int mComparisons) { minComparisons = mComparisons; };
+	void setOptimalRoots(queue<int> opRoots) { swap(optimalRoots, opRoots); };
+
+
 	void addOptimalRoot(int root) { optimalRoots.push(root); };
 	void Entry::print()
 	{

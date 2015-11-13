@@ -5,6 +5,8 @@
 typedef pair<int, int> Key;
 typedef map<Key, Entry> ComputationTable;
 
+void clearQueue(queue<int>& q);
+
 void initializeComputationTable(ComputationTable& table, int freq[]);
 
 void main()
@@ -15,8 +17,12 @@ void main()
 
 	initializeComputationTable(table, freq);
 
-	int nextDiagonal, row, column, i; // iterators
+	// iterators for keeping track of which two entries are being compared
+	int nextDiagonal, row, column, i;
+
+	//variables to keep track of minimum values
 	int frequency, minFrequency, comparisons, minComparisons;
+	queue<int> roots;
 
 	for (nextDiagonal = 2; nextDiagonal <= 5; ++nextDiagonal)
 	{
@@ -52,14 +58,27 @@ void main()
 			cout << "( " << row + 1 << ", " << column << " )"
 				<< "( " << row << ", " << row - 1 << " )" << endl;
 			minComparisons = table[Key(row + 1, column)].getMinComparisons() + table[Key(row, row - 1)].getMinComparisons();
+
+
+			roots.push(row);
+
 			//compute min comparisons
 			for (i = row + 1; i <= column; ++i)
 			{
 				cout << "( " << i + 1 << ", " << column << " )"
 					<< "( " << row << ", " << i - 1 << " )" << endl;
 				comparisons = table[Key(i + 1, column)].getMinComparisons() + table[Key(row, i - 1)].getMinComparisons();
+
+				if (comparisons == minComparisons)
+				{
+					
+					roots.push(i);
+				}
+
 				if (comparisons < minComparisons)
 				{
+					clearQueue(roots);
+					roots.push(i);
 					minComparisons = comparisons;
 				}
 			}
@@ -67,6 +86,9 @@ void main()
 			minComparisons += table[Key(row, column)].getMinFrequency();
 
 			table[Key(row, column)].setMinComparisons(minComparisons);
+
+			table[Key(row, column)].setOptimalRoots(roots);
+			clearQueue(roots);
 
 			table[Key(row, column)].print();
 			cout << endl;
@@ -78,6 +100,12 @@ void main()
 
 
 	system("pause");
+}
+
+void clearQueue(queue<int> &q)
+{
+	queue<int> empty;
+	swap(q, empty);
 }
 
 void initializeComputationTable(ComputationTable& table, int freq[])
