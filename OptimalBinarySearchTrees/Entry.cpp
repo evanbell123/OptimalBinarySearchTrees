@@ -41,7 +41,6 @@ public:
 			cout << temp.front() << " ";
 			temp.pop();
 		}
-		cout << endl;
 	};
 
 };

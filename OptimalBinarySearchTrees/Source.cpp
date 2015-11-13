@@ -1,21 +1,38 @@
-
 #include "Entry.cpp"
 #include <map>
 
 typedef pair<int, int> Key;
-typedef map<Key, Entry> ComputationTable;
+typedef map<Key, Entry> LookupTable;
 
 void clearQueue(queue<int>& q);
 
-void initializeComputationTable(ComputationTable& table, int freq[]);
+void computeLookupTable(LookupTable& table, vector<int> freq);
+void initializeLookupTable(LookupTable& table, vector<int> freq, size_t totalFreq);
+void displayLookupTable(LookupTable& table, size_t totalFreq);
 
 void main()
 {
-	int freq[] = { 6,4,2,6,4 };
+	vector<int> freq1 = { 6,4,2,6,4 };
+	vector<int> freq2 = { 19,15,11,20,13,15 };
 
-	ComputationTable table;
+	LookupTable table;
 
-	initializeComputationTable(table, freq);
+	computeLookupTable(table, freq2);
+
+	system("pause");
+}
+
+void clearQueue(queue<int> &q)
+{
+	queue<int> empty;
+	swap(q, empty);
+}
+
+void computeLookupTable(LookupTable& table, vector<int> freq)
+{
+	size_t totalFrequencies = freq.size();
+
+	initializeLookupTable(table, freq, totalFrequencies);
 
 	// iterators for keeping track of which two entries are being compared
 	int nextDiagonal, row, column, i;
@@ -24,28 +41,16 @@ void main()
 	int frequency, minFrequency, comparisons, minComparisons;
 	queue<int> roots;
 
-	for (nextDiagonal = 2; nextDiagonal <= 5; ++nextDiagonal)
+	for (nextDiagonal = 2; nextDiagonal <= totalFrequencies; ++nextDiagonal)
 	{
-		//cout << "Next Diagonal" << endl << endl;
-		for (column = nextDiagonal, row = 1; column <= 5; ++column, ++row)
+		for (column = nextDiagonal, row = 1; column <= totalFrequencies; ++column, ++row)
 		{
-			cout << "( " << row << ", " << column << " )" << endl;
-
-			/*
-			cout << "( " << row + 1 << ", " << column << " )"
-				<< "( " << row << ", " << row << " )" << endl << endl;
-				*/
-
-				//compute first possible frequency for this entry
+			//compute first possible frequency for this entry
 			minFrequency = table[Key(row + 1, column)].getMinFrequency() + table[Key(row, row)].getMinFrequency();
 
 			//compute the remaining frequencies to determine the minimum frequency for each remaining entry in the diagonal
 			for (i = row + 1; i <= column - 1; ++i)
 			{
-				/*
-				cout << "( " << i + 1 << ", " << column << " )"
-					<< "( " << row << ", " << i << " )" << endl;
-					*/
 				frequency = table[Key(i + 1, column)].getMinFrequency() + table[Key(row, i)].getMinFrequency();
 
 				if (frequency < minFrequency)
@@ -55,8 +60,6 @@ void main()
 			}
 			table[Key(row, column)].setMinFrequency(minFrequency);
 
-			cout << "( " << row + 1 << ", " << column << " )"
-				<< "( " << row << ", " << row - 1 << " )" << endl;
 			minComparisons = table[Key(row + 1, column)].getMinComparisons() + table[Key(row, row - 1)].getMinComparisons();
 
 
@@ -65,13 +68,10 @@ void main()
 			//compute min comparisons
 			for (i = row + 1; i <= column; ++i)
 			{
-				cout << "( " << i + 1 << ", " << column << " )"
-					<< "( " << row << ", " << i - 1 << " )" << endl;
 				comparisons = table[Key(i + 1, column)].getMinComparisons() + table[Key(row, i - 1)].getMinComparisons();
 
 				if (comparisons == minComparisons)
 				{
-					
 					roots.push(i);
 				}
 
@@ -90,39 +90,39 @@ void main()
 			table[Key(row, column)].setOptimalRoots(roots);
 			clearQueue(roots);
 
+			cout << "( " << row << ", " << column << " )" << endl;
 			table[Key(row, column)].print();
 			cout << endl;
 		}
-		//cout << endl;
 	}
-
-
-
-
-	system("pause");
 }
 
-void clearQueue(queue<int> &q)
-{
-	queue<int> empty;
-	swap(q, empty);
-}
-
-void initializeComputationTable(ComputationTable& table, int freq[])
+void initializeLookupTable(LookupTable& table, vector<int> freq, size_t totalFreq)
 {
 	//initialize first diagonal
-	for (int i = 1, j = 0; i <= 6, j <= 5; ++i, ++j)
+	for (int i = 1, j = 0; i <= totalFreq + 1, j <= totalFreq; ++i, ++j)
 	{
-		//cout << "( " << i << ", " << j << " )" << endl;
 		table.insert(make_pair(Key(i, j), Entry(0, 0)));
-		//table[Key(i, j)].print();
 	}
 
 	//initialize second diagonal
-	for (int i = 1; i <= 5; ++i)
+	for (int i = 1; i <= totalFreq; ++i)
 	{
-		//cout << "( " << i << ", " << i << " )" << endl;
 		table.insert(make_pair(Key(i, i), Entry(freq[i - 1], freq[i - 1], i)));
-		//table[Key(i, i)].print();
+	}
+}
+
+void displayLookupTable(LookupTable& table, size_t totalFreq)
+{
+	int row, column;
+
+	for (row = 1; row <= totalFreq + 1; row++)
+	{
+		for (column = 0; column <= totalFreq; column++)
+		{
+			cout << "( " << row << ", " << column << ") " << endl;
+			table[Key(row, column)].print();
+		}
+		cout << endl;
 	}
 }
