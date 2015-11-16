@@ -29,18 +29,21 @@ public:
 
 
 	void addOptimalRoot(int root) { optimalRoots.push(root); };
-	void Entry::print()
+	void Entry::print(int width)
 	{
 		queue <int> temp = optimalRoots;
-
-		cout << "Minimum Frequency: " << minFrequency << endl;
-		cout << "Minimum Comparisons: " << minComparisons << endl;
-		cout << "Optimal Roots: ";
+		cout << setw(width) << '|'
+			<< "F = " << minFrequency << endl
+			<< setw(width) << '|'
+			<< "C = " << minComparisons << endl
+			<< setw(width) << '|'
+			<< "R = ";
 		while (!temp.empty())
 		{
 			cout << temp.front() << " ";
 			temp.pop();
 		}
+		cout << endl;
 	};
 
 };

@@ -1,6 +1,7 @@
 #include "Entry.cpp"
 #include <map>
 
+
 typedef pair<int, int> Key;
 typedef map<Key, Entry> LookupTable;
 
@@ -17,7 +18,9 @@ void main()
 
 	LookupTable table;
 
-	computeLookupTable(table, freq2);
+	computeLookupTable(table, freq1);
+
+	displayLookupTable(table, freq1.size());
 
 	system("pause");
 }
@@ -90,11 +93,14 @@ void computeLookupTable(LookupTable& table, vector<int> freq)
 			table[Key(row, column)].setOptimalRoots(roots);
 			clearQueue(roots);
 
-			cout << "( " << row << ", " << column << " )" << endl;
-			table[Key(row, column)].print();
-			cout << endl;
+			//cout << "( " << row << ", " << column << " )" << endl;
+			//table[Key(row, column)].print();
+
 		}
+		//cout << endl;
 	}
+
+
 }
 
 void initializeLookupTable(LookupTable& table, vector<int> freq, size_t totalFreq)
@@ -114,15 +120,17 @@ void initializeLookupTable(LookupTable& table, vector<int> freq, size_t totalFre
 
 void displayLookupTable(LookupTable& table, size_t totalFreq)
 {
-	int row, column;
+	int width = 15;
+	int row, column, nextDiagonal;
 
-	for (row = 1; row <= totalFreq + 1; row++)
+	for (nextDiagonal = 1; nextDiagonal <= totalFreq; ++nextDiagonal)
 	{
-		for (column = 0; column <= totalFreq; column++)
+		for (row = 1, column = nextDiagonal; column <= totalFreq; ++column, ++row)
 		{
-			cout << "( " << row << ", " << column << ") " << endl;
-			table[Key(row, column)].print();
+			cout << setw(width*column)
+				<< "|( " << row << ", " << column << " )" << endl;
+			table[Key(row, column)].print(width * column);
 		}
-		cout << endl;
+		//cout << endl;
 	}
 }
