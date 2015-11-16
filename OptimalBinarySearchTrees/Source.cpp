@@ -127,8 +127,8 @@ void displayLookupTable(LookupTable& table, size_t totalFreq)
 	{
 		for (row = 1, column = nextDiagonal; column <= totalFreq; ++column, ++row)
 		{
-			cout << setw(width*column)
-				<< "|( " << row << ", " << column << " )" << endl;
+			cout << setw(width*column) << "|"
+				<< "( " << row << ", " << column << " )" << endl;
 			table[Key(row, column)].print(width * column);
 		}
 		//cout << endl;
