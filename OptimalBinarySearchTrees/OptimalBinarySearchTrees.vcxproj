@@ -125,7 +125,8 @@
     <ClInclude Include="Header.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\..\OneDrive\Algorithms and Complexity\project\CS404FS15ProjectOBSTsmallSet.dat" />
+    <Text Include="SampleData.txt" />
+    <Text Include="SampleData1.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

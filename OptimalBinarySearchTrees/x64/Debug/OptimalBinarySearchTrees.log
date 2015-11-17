@@ -1,16 +1,16 @@
-﻿Build started 11/16/2015 12:02:58 PM.
-     1>Project "C:\Users\ebbmf\Documents\GitHubVisualStudio\OptimalBinarySearchTrees\OptimalBinarySearchTrees\OptimalBinarySearchTrees.vcxproj" on node 2 (Rebuild target(s)).
+﻿Build started 11/17/2015 7:24:10 AM.
+     1>Project "C:\Users\Evan\Documents\GitHubVisualStudio\OptimalBinarySearchTrees\OptimalBinarySearchTrees\OptimalBinarySearchTrees.vcxproj" on node 2 (Rebuild target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\x86_amd64\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"x64\Debug\\" /Fd"x64\Debug\vc140.pdb" /Gd /TP /errorReport:prompt Entry.cpp Source.cpp
          Source.cpp
          Entry.cpp
          Generating Code...
        Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\ebbmf\Documents\GitHubVisualStudio\OptimalBinarySearchTrees\x64\Debug\OptimalBinarySearchTrees.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /Debug /PDB:"C:\Users\ebbmf\Documents\GitHubVisualStudio\OptimalBinarySearchTrees\x64\Debug\OptimalBinarySearchTrees.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\ebbmf\Documents\GitHubVisualStudio\OptimalBinarySearchTrees\x64\Debug\OptimalBinarySearchTrees.lib" /MACHINE:X64 x64\Debug\Entry.obj
+         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Evan\Documents\GitHubVisualStudio\OptimalBinarySearchTrees\x64\Debug\OptimalBinarySearchTrees.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /Debug /PDB:"C:\Users\Evan\Documents\GitHubVisualStudio\OptimalBinarySearchTrees\x64\Debug\OptimalBinarySearchTrees.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Evan\Documents\GitHubVisualStudio\OptimalBinarySearchTrees\x64\Debug\OptimalBinarySearchTrees.lib" /MACHINE:X64 x64\Debug\Entry.obj
          x64\Debug\Source.obj
-         OptimalBinarySearchTrees.vcxproj -> C:\Users\ebbmf\Documents\GitHubVisualStudio\OptimalBinarySearchTrees\x64\Debug\OptimalBinarySearchTrees.exe
-     1>Done Building Project "C:\Users\ebbmf\Documents\GitHubVisualStudio\OptimalBinarySearchTrees\OptimalBinarySearchTrees\OptimalBinarySearchTrees.vcxproj" (Rebuild target(s)).
+         OptimalBinarySearchTrees.vcxproj -> C:\Users\Evan\Documents\GitHubVisualStudio\OptimalBinarySearchTrees\x64\Debug\OptimalBinarySearchTrees.exe
+     1>Done Building Project "C:\Users\Evan\Documents\GitHubVisualStudio\OptimalBinarySearchTrees\OptimalBinarySearchTrees\OptimalBinarySearchTrees.vcxproj" (Rebuild target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:01.47
+Time Elapsed 00:00:06.07

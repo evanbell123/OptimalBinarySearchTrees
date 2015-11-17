@@ -1,26 +1,60 @@
 #include "Entry.cpp"
 #include <map>
+#include <fstream>
+#include <sstream>
+#include <stack>
 
 
 typedef pair<int, int> Key;
 typedef map<Key, Entry> LookupTable;
 
 void clearQueue(queue<int>& q);
-
-void computeLookupTable(LookupTable& table, vector<int> freq);
-void initializeLookupTable(LookupTable& table, vector<int> freq, size_t totalFreq);
+void computeLookupTable(LookupTable& table, queue<int>& freq);
+void initializeLookupTable(LookupTable& table, queue<int>& freq, size_t totalFreq);
 void displayLookupTable(LookupTable& table, size_t totalFreq);
+
+void displayFrequencies(queue<int> frequencies);
 
 void main()
 {
-	vector<int> freq1 = { 6,4,2,6,4 };
-	vector<int> freq2 = { 19,15,11,20,13,15 };
-
 	LookupTable table;
 
-	computeLookupTable(table, freq1);
 
-	displayLookupTable(table, freq1.size());
+
+	string line;
+	size_t stringSize;
+
+	queue<int> frequencies;
+
+	ifstream myfile("SampleData1.txt");
+	if (myfile.is_open())
+	{
+		while (!myfile.eof() && line != "0")
+		{
+			//frequencyLists.push(new vector<int>);
+			getline(myfile, line, ','); //get next frequency
+			line.erase(0, 1); // remove the space
+			if (line != "0")
+			{
+				frequencies.push(stoi(line, &stringSize)); // add to queue
+			}
+		}
+		myfile.close();
+	}
+	else
+	{
+		cout << "Unable to open file";
+	}
+
+	size_t totalFrequencies = frequencies.size();
+
+	displayFrequencies(frequencies);
+
+	computeLookupTable(table, frequencies);
+
+	displayLookupTable(table, totalFrequencies);
+
+
 
 	system("pause");
 }
@@ -31,7 +65,7 @@ void clearQueue(queue<int> &q)
 	swap(q, empty);
 }
 
-void computeLookupTable(LookupTable& table, vector<int> freq)
+void computeLookupTable(LookupTable& table, queue<int>& freq)
 {
 	size_t totalFrequencies = freq.size();
 
@@ -92,18 +126,13 @@ void computeLookupTable(LookupTable& table, vector<int> freq)
 
 			table[Key(row, column)].setOptimalRoots(roots);
 			clearQueue(roots);
-
-			//cout << "( " << row << ", " << column << " )" << endl;
-			//table[Key(row, column)].print();
-
 		}
-		//cout << endl;
 	}
 
 
 }
 
-void initializeLookupTable(LookupTable& table, vector<int> freq, size_t totalFreq)
+void initializeLookupTable(LookupTable& table, queue<int>& freq, size_t totalFreq)
 {
 	//initialize first diagonal
 	for (int i = 1, j = 0; i <= totalFreq + 1, j <= totalFreq; ++i, ++j)
@@ -111,26 +140,38 @@ void initializeLookupTable(LookupTable& table, vector<int> freq, size_t totalFre
 		table.insert(make_pair(Key(i, j), Entry(0, 0)));
 	}
 
+	int nextFreq;
 	//initialize second diagonal
 	for (int i = 1; i <= totalFreq; ++i)
 	{
-		table.insert(make_pair(Key(i, i), Entry(freq[i - 1], freq[i - 1], i)));
+		nextFreq = freq.front();
+		freq.pop();
+		table.insert(make_pair(Key(i, i), Entry(nextFreq, nextFreq, i)));
 	}
 }
 
 void displayLookupTable(LookupTable& table, size_t totalFreq)
 {
-	int width = 15;
-	int row, column, nextDiagonal;
-
-	for (nextDiagonal = 1; nextDiagonal <= totalFreq; ++nextDiagonal)
+	int width = 10;
+	int row, column;
+	cout << '|';
+	for (row = 1; row <= totalFreq; ++row)
 	{
-		for (row = 1, column = nextDiagonal; column <= totalFreq; ++column, ++row)
+		for (column = row; column <= totalFreq; ++column)
 		{
-			cout << setw(width*column) << "|"
-				<< "( " << row << ", " << column << " )" << endl;
-			table[Key(row, column)].print(width * column);
+			cout << "( " << row << ", " << column << " )" << setw(width+2) << "|";
 		}
-		//cout << endl;
+		cout << endl;
+		cout << '|' << setw(2*row*width) << '|';
 	}
+}
+
+void displayFrequencies(queue<int> frequencies)
+{
+	while (!frequencies.empty())
+	{
+		cout << frequencies.front() << ", ";
+		frequencies.pop();
+	}
+	cout << endl;
 }

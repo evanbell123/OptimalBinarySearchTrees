@@ -28,8 +28,11 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\..\OneDrive\Algorithms and Complexity\project\CS404FS15ProjectOBSTsmallSet.dat">
+    <Text Include="SampleData.txt">
       <Filter>Resource Files</Filter>
-    </None>
+    </Text>
+    <Text Include="SampleData1.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
 </Project>
