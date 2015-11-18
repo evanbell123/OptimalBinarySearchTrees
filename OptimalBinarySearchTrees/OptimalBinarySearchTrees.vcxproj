@@ -118,14 +118,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Entry.cpp" />
-    <ClCompile Include="Node.cpp" />
-    <ClCompile Include="OBST.cpp" />
-    <ClCompile Include="OBSTComputationTable.cpp" />
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BinaryTreeConstruction.h" />
+    <ClInclude Include="Entry.h" />
     <ClInclude Include="Header.h" />
+    <ClInclude Include="OBSTComputationTable.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="SampleData.txt" />
