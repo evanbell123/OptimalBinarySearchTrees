@@ -1,9 +1,12 @@
 
 #include "OBSTComputationTable.cpp"
+#include "Node.cpp"
 
 #include <fstream>
 
 void displayFrequencies(queue<int> frequencies);
+
+Node *constructOBST(LookupTable &table, int row, int column);
 
 void main()
 {
@@ -36,6 +39,10 @@ void main()
 	OBSTComputationTable table(frequencies);
 	table.display();
 
+	int i = 1;
+	int j = static_cast<int>(table.getTotalFrequencies());
+	LookupTable lookupTable = table.getLookupTable();
+
 	system("pause");
 }
 
@@ -47,4 +54,14 @@ void displayFrequencies(queue<int> frequencies)
 		frequencies.pop();
 	}
 	cout << endl;
+}
+
+//row must be initialized to 1
+//column must be initialized to the total number of frequencies
+Node *constructOBST(LookupTable &table, int row, int column)
+{
+	if (row != column)
+	{
+		return constructOBST(table, row - 1, column);
+	}
 }

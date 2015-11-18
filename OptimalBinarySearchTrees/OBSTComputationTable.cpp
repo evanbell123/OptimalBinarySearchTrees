@@ -10,26 +10,19 @@ private:
 	LookupTable table;
 	size_t totalFrequencies;
 	double averageTime;
-	void OBSTComputationTable::clearQueue(queue<int>& q)
+	void clearQueue(queue<int>& q)
 	{
 		queue<int> empty;
 		swap(q, empty);
 	}
-public:
-	OBSTComputationTable(queue<int> frequencies)
+
+	double computeAverageTime()
 	{
-		totalFrequencies = frequencies.size();
-		computeLookupTable(frequencies);
+		Entry lastEntry = table[Key(1, static_cast<int>(totalFrequencies))];
+		return lastEntry.getMinComparisons() / double(lastEntry.getMinFrequency());
 	}
 
-	
-
-	void OBSTComputationTable::computeAverageTime()
-	{
-
-	}
-
-	void OBSTComputationTable::computeLookupTable(queue<int>& freq)
+	void computeLookupTable(queue<int>& freq)
 	{
 		size_t totalFrequencies = freq.size();
 
@@ -62,7 +55,7 @@ public:
 				table[Key(row, column)].setMinFrequency(minFrequency);
 
 				minComparisons = table[Key(row + 1, column)].getMinComparisons() + table[Key(row, row - 1)].getMinComparisons();
-
+				 
 
 				roots.push(row);
 
@@ -94,7 +87,7 @@ public:
 		}
 	}
 
-	void OBSTComputationTable::initializeLookupTable(queue<int>& freq)
+	void initializeLookupTable(queue<int>& freq)
 	{
 		//initialize first diagonal
 		for (int i = 1, j = 0; i <= totalFrequencies + 1, j <= totalFrequencies; ++i, ++j)
@@ -111,8 +104,25 @@ public:
 			table.insert(make_pair(Key(i, i), Entry(nextFreq, nextFreq, i)));
 		}
 	}
+public:
+	OBSTComputationTable(queue<int> frequencies)
+	{
+		totalFrequencies = frequencies.size();
+		computeLookupTable(frequencies);
+		averageTime = computeAverageTime();
+	}
 
-	void OBSTComputationTable::display()
+	size_t getTotalFrequencies()
+	{
+		return totalFrequencies;
+	}
+
+	LookupTable getLookupTable()
+	{
+		return table;
+	}
+
+	void display()
 	{
 		int width = 15;
 		int row, column, nextDiagonal;
@@ -125,9 +135,10 @@ public:
 					<< "( " << row << ", " << column << " )" << endl;
 				table[Key(row, column)].print(width * column);
 			}
-			//cout << endl;
 		}
+		cout << endl << "Average Time Complexity = " << setprecision(3) << averageTime << endl;
 	}
+	
 
 };
 

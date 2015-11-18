@@ -23,6 +23,21 @@ public:
 	int getMinComparisons() { return minComparisons; };
 	queue <int> getOptimalRoots() { return optimalRoots; };
 
+	//return root at front of queue, then pop
+	int popOptimalRoot()
+	{
+		if (!optimalRoots.empty())
+		{
+			int root = optimalRoots.front();
+			optimalRoots.pop();
+			return root;
+		}
+		else
+		{
+			return -1;
+		}
+	}
+
 	void setMinFrequency(int mWeight) { minFrequency = mWeight; };
 	void setMinComparisons(int mComparisons) { minComparisons = mComparisons; };
 	void setOptimalRoots(queue<int> opRoots) { swap(optimalRoots, opRoots); };

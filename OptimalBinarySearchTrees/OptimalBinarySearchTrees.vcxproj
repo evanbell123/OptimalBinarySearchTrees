@@ -119,6 +119,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Entry.cpp" />
+    <ClCompile Include="Node.cpp" />
+    <ClCompile Include="OBST.cpp" />
     <ClCompile Include="OBSTComputationTable.cpp" />
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
