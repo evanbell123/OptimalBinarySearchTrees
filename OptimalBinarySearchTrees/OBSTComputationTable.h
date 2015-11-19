@@ -96,7 +96,7 @@ private:
 		//initialize first diagonal
 		for (int i = 1, j = 0; i <= totalFrequencies + 1, j <= totalFrequencies; ++i, ++j)
 		{
-			table.insert(make_pair(Key(i, j), Entry(0, 0)));
+			table.insert(make_pair(Key(i, j), Entry(0, 0, -1)));
 		}
 
 		int nextFreq;

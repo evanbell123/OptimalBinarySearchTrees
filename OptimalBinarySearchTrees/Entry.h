@@ -16,7 +16,7 @@ public:
 	Entry(int mWeight, int mComparisons) : minFrequency(mWeight), minComparisons(mComparisons) {};
 	Entry(int mWeight, int mComparisons, int opRoot) : minFrequency(mWeight), minComparisons(mComparisons)
 	{
-		addOptimalRoot(opRoot);
+		pushOptimalRoot(opRoot);
 	};
 	Entry(int mWeight, int mComparisons, queue<int> opRoots) : minFrequency(mWeight), minComparisons(mComparisons)
 	{
@@ -25,21 +25,19 @@ public:
 
 	int getMinFrequency() { return minFrequency; };
 	int getMinComparisons() { return minComparisons; };
-	queue <int> getOptimalRoots() { return optimalRoots; };
+	queue <int> getAllOptimalRoots() { return optimalRoots; };
 
-	//return root at front of queue, then pop
-	int popOptimalRoot()
+	void popOptimalRoot()
 	{
 		if (!optimalRoots.empty())
 		{
-			int root = optimalRoots.front();
 			optimalRoots.pop();
-			return root;
 		}
-		else
-		{
-			return -1;
-		}
+	}
+
+	int getOptimalRoot()
+	{
+		return optimalRoots.front();
 	}
 
 	void setMinFrequency(int mWeight) { minFrequency = mWeight; };
@@ -47,8 +45,8 @@ public:
 	void setOptimalRoots(queue<int> opRoots) { swap(optimalRoots, opRoots); };
 
 
-	void addOptimalRoot(int root) { optimalRoots.push(root); };
-	void Entry::print(int width)
+	void pushOptimalRoot(int root) { optimalRoots.push(root); };
+	void print(int width)
 	{
 		queue <int> temp = optimalRoots;
 		cout << setw(width) << '|'

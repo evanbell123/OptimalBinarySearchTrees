@@ -1,12 +1,11 @@
 #include "OBSTComputationTable.h"
 #include "BinaryTreeConstruction.h"
 
-//#include <fstream>
-//#include <string>
-
 void displayFrequencies(queue<int> frequencies);
 
 BinaryTree *constructOBST(LookupTable &table, int row, int column);
+BinaryTree *constructOBSTEquivalent(LookupTable &table, int row, int column);
+//vector<BinaryTree*> *constructAllOBST(LookupTable &table, int row, int column);
 
 
 void main()
@@ -40,24 +39,37 @@ void main()
 	OBSTComputationTable table(frequencies);
 	table.display();
 
-	int i = 1;
-	int j = static_cast<int>(table.getTotalFrequencies());
+	int row = 1;
+	int column = static_cast<int>(table.getTotalFrequencies());
 	LookupTable lookupTable = table.getLookupTable();
-
-	BinaryTree *obst1 = constructOBST(lookupTable, i, j);
-	BinaryTree *obst2 = constructOBST(lookupTable, i, j);
-	printPretty(obst1, 1, 0, cout);
-	printPretty(obst2, 1, 0, cout);
-
 	/*
-	BinaryTree *root = new BinaryTree(2);
-	root->left = new BinaryTree(1);
-	root->right = new BinaryTree(4);
-	root->right->left = new BinaryTree(3);
-	root->right->right = new BinaryTree(5);
+	queue<int> test = lookupTable[Key(row, column)].getAllOptimalRoots();
+	if (!test.empty())
+	{
+		test.pop();
+	}
 
-	printPretty(root, 1, 0, cout);
+	lookupTable[Key(row, column)].setOptimalRoots(test);
+
+	lookupTable[Key(row, column)].print(20);
 	*/
+	
+
+	queue<int> test = lookupTable[Key(row, column)].getAllOptimalRoots();
+
+	if (!test.empty())
+	{
+		lookupTable[Key(row, column)].popOptimalRoot();
+	}
+
+	lookupTable[Key(row, column)].print(20);
+
+	BinaryTree *obst1 = constructOBST(lookupTable, row, column);
+	
+	printPretty(obst1, 1, 0, cout);
+
+
+	//table.display();
 
 	
 
@@ -78,13 +90,24 @@ void displayFrequencies(queue<int> frequencies)
 //column must be initialized to the total number of frequencies
 BinaryTree *constructOBST(LookupTable &table, int row, int column)
 {
-	int optimalRoot = table[Key(row, column)].popOptimalRoot();
-	BinaryTree *OBST = new BinaryTree(optimalRoot);;
-	if (row != column)
+	int optimalRoot = table[Key(row, column)].getOptimalRoot();
+
+	BinaryTree *OBST = new BinaryTree(optimalRoot);
+	if (row <= column)
 	{
-		OBST = new BinaryTree(optimalRoot);
 		OBST->left = constructOBST(table, row, optimalRoot - 1);
-		OBST->right = constructOBST(table, optimalRoot + 1, column);
+		OBST->right = constructOBST(table, optimalRoot + 1, column);	
 	}
 	return OBST;
 }
+
+/*
+vector<BinaryTree*> *constructAllOBST(LookupTable &table, int row, int column)
+{
+	vector<BinaryTree*> OBSTs;
+
+	OBSTs.push_back(constructOBST(table, row, column));
+
+	return OBSTs;
+}
+*/
