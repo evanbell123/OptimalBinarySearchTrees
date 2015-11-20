@@ -1,5 +1,6 @@
 
 #include "Entry.h"
+#include "BinaryTreePrint.h"
 #include <ctime>
 
 typedef pair<int, int> Key;
@@ -9,6 +10,7 @@ class OBSTComputationTable
 {
 private:
 	LookupTable table;
+	BinaryTree *obst; //optimal binary search tree
 	size_t totalFrequencies;
 	int sumOfFrequencies;
 	double averageTime;
@@ -119,14 +121,37 @@ private:
 			table.insert(make_pair(Key(i, i), Entry(nextFreq, nextFreq, i)));
 		}
 	}
+
+	//row must be initialized to 1
+	//column must be initialized to the total number of frequencies
+	//level must be initialized to 1
+	BinaryTree *constructOBST(int  row, int column, int level)
+	{
+		int optimalRoot = table[Key(row, column)].getOptimalRoot();
+		int freq = table[Key(row, column)].getMinFrequency();
+		BinaryTree *OBST = new BinaryTree(optimalRoot, freq, level);
+
+		if (row <= column)
+		{
+			OBST->left = constructOBST(row, optimalRoot - 1, level + 1);
+			OBST->right = constructOBST(optimalRoot + 1, column, level + 1);
+		}
+		return OBST;
+	}
 public:
 	OBSTComputationTable(queue<int> *frequencies)
 	{
+		start = clock();
 		totalFrequencies = frequencies->size();
 		sumOfFrequencies = 0;
 		computeLookupTable(frequencies);
 		averageTime = computeAverageTime();
-		start = clock();
+		obst = constructOBST(1, static_cast<int>(totalFrequencies), 1);
+	}
+
+	BinaryTree *getOBST()
+	{
+		return obst;
 	}
 
 	double getAverageTime()
@@ -149,7 +174,7 @@ public:
 		return table;
 	}
 
-	void display()
+	void displayTable()
 	{
 		int width = 15;
 		int row, column, nextDiagonal;
@@ -164,6 +189,25 @@ public:
 			}
 		}
 		cout << endl << "Average Time Complexity = " << setprecision(3) << averageTime << endl;
+	}
+
+	void displayNodeInfoWrapper()
+	{
+		int width = 15;
+		cout << setw(width) << "Key" << setw(width) << "Freq" << setw(width) << "Level" << setw(width) << "E[X]" << setw(width) << "E[X^2]" << setw(width) << endl;
+
+		displayNodeInfo(obst, width);
+	}
+
+	void displayNodeInfo(BinaryTree *root, int width)
+	{
+		int key = root->key;
+		if (key > -1)
+		{
+			cout << root->key << setw(width) << root->freq << setw(width) << root->level << setw(width) << root->eOfX << setw(width) << root->eOfXSquared << setw(width) << endl;
+			displayNodeInfo(root->left, width);
+			displayNodeInfo(root->right, width);
+		}
 	}
 
 	void timeMarker(string message)

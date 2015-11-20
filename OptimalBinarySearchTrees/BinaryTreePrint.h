@@ -12,11 +12,12 @@ struct BinaryTree {
 	int key;
 	int freq;
 	int level;
-	double calc;
+	double eOfX; // E[X]
+	double eOfXSquared; // E[X^2]
 	BinaryTree(int k, int val, int lev) : left(NULL), right(NULL), key(k), freq(val), level(lev)
 	{
-		//calc = (level)*(level-1)
-		calc = 0;
+		eOfX = level*freq;
+		eOfXSquared = level*level*freq;
 	}
 };
 
