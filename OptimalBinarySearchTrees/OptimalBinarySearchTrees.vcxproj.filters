@@ -29,7 +29,7 @@
     <ClInclude Include="Entry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BinaryTreeConstruction.h">
+    <ClInclude Include="BinaryTreePrint.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

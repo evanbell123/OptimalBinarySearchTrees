@@ -1,9 +1,6 @@
 
 #include "Entry.h"
-#include <map>
-
-
-//#include <string>
+#include <ctime>
 
 typedef pair<int, int> Key;
 typedef map<Key, Entry> LookupTable;
@@ -14,6 +11,8 @@ private:
 	LookupTable table;
 	size_t totalFrequencies;
 	double averageTime;
+	clock_t start;
+
 	void clearQueue(queue<int>& q)
 	{
 		queue<int> empty;
@@ -26,11 +25,13 @@ private:
 		return lastEntry.getMinComparisons() / double(lastEntry.getMinFrequency());
 	}
 
-	void computeLookupTable(queue<int>& freq)
+	void computeLookupTable(queue<int> *freq)
 	{
-		size_t totalFrequencies = freq.size();
+		size_t totalFrequencies = freq->size();
 
 		initializeLookupTable(freq);
+
+		timeMarker("initialized lookup table");
 
 		// iterators for keeping track of which two entries are being compared
 		int nextDiagonal, row, column, i;
@@ -88,10 +89,13 @@ private:
 				table[Key(row, column)].setOptimalRoots(roots);
 				clearQueue(roots);
 			}
+
+			timeMarker("compute diagonal # " + intToString(nextDiagonal));
 		}
+		
 	}
 
-	void initializeLookupTable(queue<int>& freq)
+	void initializeLookupTable(queue<int> *freq)
 	{
 		//initialize first diagonal
 		for (int i = 1, j = 0; i <= totalFrequencies + 1, j <= totalFrequencies; ++i, ++j)
@@ -103,17 +107,23 @@ private:
 		//initialize second diagonal
 		for (int i = 1; i <= totalFrequencies; ++i)
 		{
-			nextFreq = freq.front();
-			freq.pop();
+			nextFreq = freq->front();
+			freq->pop();
 			table.insert(make_pair(Key(i, i), Entry(nextFreq, nextFreq, i)));
 		}
 	}
 public:
-	OBSTComputationTable(queue<int> frequencies)
+	OBSTComputationTable(queue<int> *frequencies)
 	{
-		totalFrequencies = frequencies.size();
+		totalFrequencies = frequencies->size();
 		computeLookupTable(frequencies);
 		averageTime = computeAverageTime();
+		start = clock();
+	}
+
+	double getAverageTime()
+	{
+		return averageTime;
 	}
 
 	size_t getTotalFrequencies()
@@ -143,5 +153,9 @@ public:
 		cout << endl << "Average Time Complexity = " << setprecision(3) << averageTime << endl;
 	}
 
+	void timeMarker(string message)
+	{
+		cout << (clock() - start) / (double)CLOCKS_PER_SEC << setw(30) << setiosflags(ios::right) << message << endl;
+	}
 
 };
