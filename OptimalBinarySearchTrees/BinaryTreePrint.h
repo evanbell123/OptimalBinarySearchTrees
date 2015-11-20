@@ -10,9 +10,14 @@ using namespace std;
 struct BinaryTree {
 	BinaryTree *left, *right;
 	int key;
-	int data;
+	int freq;
 	int level;
-	BinaryTree(int k, int val, int lev) : left(NULL), right(NULL), key(k), data(val), level(lev) { }
+	double calc;
+	BinaryTree(int k, int val, int lev) : left(NULL), right(NULL), key(k), freq(val), level(lev)
+	{
+		//calc = (level)*(level-1)
+		calc = 0;
+	}
 };
 
 // Find the maximum height of the binary tree

@@ -10,6 +10,7 @@ class OBSTComputationTable
 private:
 	LookupTable table;
 	size_t totalFrequencies;
+	int sumOfFrequencies;
 	double averageTime;
 	clock_t start;
 
@@ -44,6 +45,8 @@ private:
 		{
 			for (column = nextDiagonal, row = 1; column <= totalFrequencies; ++column, ++row)
 			{
+				
+
 				//compute first possible frequency for this entry
 				minFrequency = table[Key(row + 1, column)].getMinFrequency() + table[Key(row, row)].getMinFrequency();
 
@@ -108,6 +111,10 @@ private:
 		for (int i = 1; i <= totalFrequencies; ++i)
 		{
 			nextFreq = freq->front();
+
+			//keep track of the sum of frequencies
+			sumOfFrequencies += nextFreq;
+
 			freq->pop();
 			table.insert(make_pair(Key(i, i), Entry(nextFreq, nextFreq, i)));
 		}
@@ -116,6 +123,7 @@ public:
 	OBSTComputationTable(queue<int> *frequencies)
 	{
 		totalFrequencies = frequencies->size();
+		sumOfFrequencies = 0;
 		computeLookupTable(frequencies);
 		averageTime = computeAverageTime();
 		start = clock();
@@ -124,6 +132,11 @@ public:
 	double getAverageTime()
 	{
 		return averageTime;
+	}
+
+	int getSumOfFrequencies()
+	{
+		return sumOfFrequencies;
 	}
 
 	size_t getTotalFrequencies()
