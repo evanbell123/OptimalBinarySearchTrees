@@ -1,6 +1,5 @@
 
-#include "Entry.h"
-#include "BinaryTreePrint.h"
+#include "Header.h"
 #include <ctime>
 
 typedef pair<int, int> Key;
@@ -24,12 +23,14 @@ private:
 
 	double computeAverageTime()
 	{
-		Entry lastEntry = table[Key(1, static_cast<int>(totalFrequencies))];
-		return lastEntry.getMinComparisons() / double(lastEntry.getMinFrequency());
+		//Entry *lastEntry = new Entry(table[Key(1, static_cast<int>(totalFrequencies))]);
+		return table[Key(1, static_cast<int>(totalFrequencies))].getMinComparisons() / double(sumOfFrequencies);
 	}
 
 	void computeLookupTable(queue<int> *freq)
 	{
+		LookupTable::iterator it = table.begin();
+
 		size_t totalFrequencies = freq->size();
 
 		initializeLookupTable(freq);
@@ -37,22 +38,24 @@ private:
 		timeMarker("initialized lookup table");
 
 		// iterators for keeping track of which two entries are being compared
-		int nextDiagonal, row, column, i;
+		int diagonal, row, column, i;
 
 		//variables to keep track of minimum values
-		int frequency, minFrequency, comparisons, minComparisons;
+		//int frequency, minFrequency, comparisons, minComparisons;
+		int frequency, comparisons, minComparisons;
 		queue<int> roots;
 
-		for (nextDiagonal = 2; nextDiagonal <= totalFrequencies; ++nextDiagonal)
+		for (diagonal = 2; diagonal <= totalFrequencies; ++diagonal)
 		{
-			for (column = nextDiagonal, row = 1; column <= totalFrequencies; ++column, ++row)
+			for (column = diagonal, row = 1; column <= totalFrequencies; ++column, ++row)
 			{
 				
-
+				Entry E1 = table.find(Key(row + 1, column))->second;
 				//compute first possible frequency for this entry
-				minFrequency = table[Key(row + 1, column)].getMinFrequency() + table[Key(row, row)].getMinFrequency();
+				frequency = E1.getMinFrequency() + table.find(Key(row, row))->second.getMinFrequency();
 
 				//compute the remaining frequencies to determine the minimum frequency for each remaining entry in the diagonal
+				/*
 				for (i = row + 1; i <= column - 1; ++i)
 				{
 					frequency = table[Key(i + 1, column)].getMinFrequency() + table[Key(row, i)].getMinFrequency();
@@ -62,22 +65,26 @@ private:
 						minFrequency = frequency;
 					}
 				}
-				table[Key(row, column)].setMinFrequency(minFrequency);
+				*/
 
-				minComparisons = table[Key(row + 1, column)].getMinComparisons() + table[Key(row, row - 1)].getMinComparisons();
 
+
+				//table.insert(it, make_pair(Key(row, column), Entry(frequency)));
+
+				minComparisons = E1.getMinComparisons() + table.find(Key(row, row - 1))->second.getMinComparisons();
 
 				roots.push(row);
 
 				//compute min comparisons
 				for (i = row + 1; i <= column; ++i)
 				{
-					comparisons = table[Key(i + 1, column)].getMinComparisons() + table[Key(row, i - 1)].getMinComparisons();
-
+					comparisons = table.find(Key(i + 1, column))->second.getMinComparisons() + table.find(Key(row, i - 1))->second.getMinComparisons();
+					
 					if (comparisons == minComparisons)
 					{
 						roots.push(i);
 					}
+					
 
 					if (comparisons < minComparisons)
 					{
@@ -87,25 +94,29 @@ private:
 					}
 				}
 
-				minComparisons += table[Key(row, column)].getMinFrequency();
+				minComparisons += frequency;
 
-				table[Key(row, column)].setMinComparisons(minComparisons);
+				Entry newEntry(frequency, minComparisons, roots);
 
-				table[Key(row, column)].setOptimalRoots(roots);
+				table.insert(it, make_pair(Key(row, column), newEntry));
+
 				clearQueue(roots);
 			}
 
-			timeMarker("compute diagonal # " + intToString(nextDiagonal));
+			timeMarker("compute diagonal # " + intToString(diagonal));
 		}
 		
 	}
 
 	void initializeLookupTable(queue<int> *freq)
 	{
+
+		LookupTable::iterator it = table.begin();
+
 		//initialize first diagonal
-		for (int i = 1, j = 0; i <= totalFrequencies + 1, j <= totalFrequencies; ++i, ++j)
+		for (int i = 1, j = 0; i <= totalFrequencies + 1 && j <= totalFrequencies; ++i, ++j)
 		{
-			table.insert(make_pair(Key(i, j), Entry(0, 0, -1)));
+			table.insert(it, make_pair(Key(i, j), Entry(0, 0, -1)));
 		}
 
 		int nextFreq;
@@ -118,7 +129,7 @@ private:
 			sumOfFrequencies += nextFreq;
 
 			freq->pop();
-			table.insert(make_pair(Key(i, i), Entry(nextFreq, nextFreq, i)));
+			table.insert(it, make_pair(Key(i, i), Entry(nextFreq, nextFreq, i)));
 		}
 	}
 
@@ -136,6 +147,7 @@ private:
 			OBST->left = constructOBST(row, optimalRoot - 1, level + 1);
 			OBST->right = constructOBST(optimalRoot + 1, column, level + 1);
 		}
+
 		return OBST;
 	}
 public:
@@ -147,6 +159,11 @@ public:
 		computeLookupTable(frequencies);
 		averageTime = computeAverageTime();
 		obst = constructOBST(1, static_cast<int>(totalFrequencies), 1);
+	}
+
+	~OBSTComputationTable()
+	{
+		delete obst;
 	}
 
 	BinaryTree *getOBST()
@@ -167,6 +184,16 @@ public:
 	size_t getTotalFrequencies()
 	{
 		return totalFrequencies;
+	}
+
+	vector<int> getFrequencies()
+	{
+		vector<int> frequencies;
+		for (int i = 1; i <= totalFrequencies; i++)
+		{
+			frequencies.push_back(table[Key(i, i)].getMinFrequency());
+		}
+		return frequencies;
 	}
 
 	LookupTable getLookupTable()
@@ -194,7 +221,7 @@ public:
 	void displayNodeInfoWrapper()
 	{
 		int width = 15;
-		cout << setw(width) << "Key" << setw(width) << "Freq" << setw(width) << "Level" << setw(width) << "E[X]" << setw(width) << "E[X^2]" << setw(width) << endl;
+		cout << setw(width) << "Key" << setw(width) << "Freq" << setw(width) << "Level" << setw(width) << "E[X^2]" << setw(width) << endl;
 
 		displayNodeInfo(obst, width);
 	}
@@ -204,7 +231,7 @@ public:
 		int key = root->key;
 		if (key > -1)
 		{
-			cout << root->key << setw(width) << root->freq << setw(width) << root->level << setw(width) << root->eOfX << setw(width) << root->eOfXSquared << setw(width) << endl;
+			cout << root->key << setw(width) << root->freq << setw(width) << root->level << setw(width) << root->eOfXSquared << setw(width) << endl;
 			displayNodeInfo(root->left, width);
 			displayNodeInfo(root->right, width);
 		}

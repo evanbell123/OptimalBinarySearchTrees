@@ -1,23 +1,36 @@
 #include "OBSTComputationTable.h"
+#include <fstream>
+#include <math.h>
 //#include "BinaryTreePrint.h"
 
 void displayFrequencies(queue<int> frequencies);
 
-BinaryTree *constructOBST(LookupTable &table, int row, int column, int level);
-double computeStandardDeviationWrapper(BinaryTree *root, int totalFreq);
-double computeStandardDeviation(BinaryTree *root);
+void printPretty(BinaryTree *root, int level, int indentSpace, ostream& out);
+// Print the arm branches (eg, /    \ ) on a line
+void printBranches(int branchLen, int nodeSpaceLen, int startLen, int nodesInThisLevel, const deque<BinaryTree*>& nodesQueue, ostream& out);
+// Print the branches and node (eg, ___10___ )
+void printNodes(int branchLen, int nodeSpaceLen, int startLen, int nodesInThisLevel, const deque<BinaryTree*>& nodesQueue, ostream& out);
+// Print the leaves only (just for the bottom row)
+void printLeaves(int indentSpace, int level, int nodesInThisLevel, const deque<BinaryTree*>& nodesQueue, ostream& out);
+int maxHeight(BinaryTree *p);
 
-void displayNodeInfo(BinaryTree *root);
+double computeStandardDeviationWrapper(BinaryTree *root, vector<int> frequencies, double eOfX, int sumOfFrequencies);
+
+int computeEOfXSquared(BinaryTree *root, vector<int> frequencies);
+
+
 
 void main()
 {
+
 	string line;
 	size_t stringSize;
 	int frequency;
 
 	queue<int> *frequencies = new queue<int>;
+	
 
-	ifstream myfile("SampleData1.txt");
+	ifstream myfile("SampleData2.txt");
 	if (myfile.is_open())
 	{
 		while (!myfile.eof() && line != "0")
@@ -37,36 +50,89 @@ void main()
 		cout << "Unable to open file";
 	}
 
+	cout << "Total Frequencies = " << static_cast<int>(frequencies->size()) << endl;
+
 	OBSTComputationTable *table = new OBSTComputationTable(frequencies);
+	
 	//table.display();
-	/*
-	int totalFrequencies = static_cast<int>(table->getTotalFrequencies());
-	LookupTable lookupTable = table->getLookupTable();
-	*/
+	
 
 	BinaryTree *obst1 = table->getOBST();
 
 	printPretty(obst1, 1, 0, cout);
 
 	int worstCase = maxHeight(obst1);
-	
-	cout << "Sum of frequencies = " << table->getSumOfFrequencies() << endl;
+	int sumOfFrequencies = table->getSumOfFrequencies();
+	double averageTime = table->getAverageTime();
+
+	int totalFrequencies = static_cast<int>(frequencies->size());
+
+	vector<int> frequencyVector = table->getFrequencies();
+
+	double eOfX = table->getAverageTime();
+
+	double stdDev = computeStandardDeviationWrapper(obst1, frequencyVector, eOfX, sumOfFrequencies);
 
 	cout << "Best Case: 1" << endl;
-	cout << "Average Case: " << table->getAverageTime() << endl;
-	cout << "Worst Case: " << worstCase << endl << endl;
-
-	//double stdDev = computeStandardDeviationWrapper(obst1, totalFrequencies);
-
-	//cout << "Standard Deviation = " << stdDev << endl;
-
-
-
+	cout << "Average Case: " << averageTime << endl;
+	cout << "Worst Case: " << worstCase << endl;
+	cout << "Standard Deviation = " << stdDev << endl << endl;
+	
 	table->displayNodeInfoWrapper();
 
+	
+	
+	delete frequencies;
+
+	/*
+	vector<int> testFrequencies{ 6,6,8,7,5,4,4,6 };
 
 
+	BinaryTree *testStdDev;
+	testStdDev = new BinaryTree(4, 7, 1);
+	testStdDev->left = new BinaryTree(2, 6, 2);
+	testStdDev->right = new BinaryTree(6, 4, 2);
+	testStdDev->left->left = new BinaryTree(1, 6, 3);
+	testStdDev->left->left->left = new BinaryTree(-1, 0, 0);
+	testStdDev->left->left->right = new BinaryTree(-1, 0, 0);
+	testStdDev->left->right = new BinaryTree(3, 8, 3);
+	testStdDev->left->right->left = new BinaryTree(-1, 0, 0);
+	testStdDev->left->right->right = new BinaryTree(-1, 0, 0);
+	testStdDev->right->left = new BinaryTree(5, 5, 3);
+	testStdDev->right->left->left = new BinaryTree(-1, 0, 0);
+	testStdDev->right->left->right = new BinaryTree(-1, 0, 0);
+	testStdDev->right->right = new BinaryTree(8, 6, 3);
+	testStdDev->right->right->left = new BinaryTree(7, 4, 4);
+	testStdDev->right->right->right = new BinaryTree(-1, 0, 0);
+	testStdDev->right->right->left->left = new BinaryTree(-1, 0, 0);
+	testStdDev->right->right->left->right = new BinaryTree(-1, 0, 0);
+
+	printPretty(testStdDev, 1, 0, cout);
+
+	double eOfXTest = (118.0 / 46.0);
+	cout << eOfXTest << endl;
+	double stdDevTest = computeStandardDeviationWrapper(testStdDev, testFrequencies, eOfXTest, 46);
+	cout << stdDevTest << endl;
+	*/
 	system("pause");
+}
+
+double computeStandardDeviationWrapper(BinaryTree *root, vector<int> frequencies, double eOfX, int sumOfFrequencies)
+{
+	double eOfXSquared = computeEOfXSquared(root, frequencies) / double(sumOfFrequencies);
+	return sqrt(eOfXSquared - (eOfX*eOfX));
+}
+
+int computeEOfXSquared(BinaryTree *root, vector<int> frequencies)
+{
+	int key = root->key;
+	int level = root->level;
+	if (key != -1)
+	{
+		return (level*level*frequencies[key-1]) + computeEOfXSquared(root->left, frequencies) + computeEOfXSquared(root->right, frequencies);
+	}
+	return 0;
+	
 }
 
 void displayFrequencies(queue<int> frequencies)
@@ -79,23 +145,80 @@ void displayFrequencies(queue<int> frequencies)
 	cout << endl;
 }
 
-
-
-double computeStandardDeviationWrapper(BinaryTree *root, int totalFreq)
-{
-	return computeStandardDeviation(root);
-
+// Find the maximum height of the binary tree
+int maxHeight(BinaryTree *p) {
+	if (!p) return 0;
+	int leftHeight = maxHeight(p->left);
+	int rightHeight = maxHeight(p->right);
+	return (leftHeight > rightHeight) ? leftHeight + 1 : rightHeight + 1;
 }
 
-double computeStandardDeviation(BinaryTree *root)
-{
-	if (root != NULL)
-	{
-		return computeStandardDeviation(root->left) + computeStandardDeviation(root->right) + root->eOfX;
+
+// Print the arm branches (eg, /    \ ) on a line
+void printBranches(int branchLen, int nodeSpaceLen, int startLen, int nodesInThisLevel, const deque<BinaryTree*>& nodesQueue, ostream& out) {
+	deque<BinaryTree*>::const_iterator iter = nodesQueue.begin();
+	for (int i = 0; i < nodesInThisLevel / 2; i++) {
+		out << ((i == 0) ? setw(startLen - 1) : setw(nodeSpaceLen - 2)) << "" << ((*iter++) ? "/" : " ");
+		out << setw(2 * branchLen + 2) << "" << ((*iter++) ? "\\" : " ");
 	}
-	else
-	{
-		return 0;
+	out << endl;
+}
+
+// Print the branches and node (eg, ___10___ )
+void printNodes(int branchLen, int nodeSpaceLen, int startLen, int nodesInThisLevel, const deque<BinaryTree*>& nodesQueue, ostream& out) {
+	deque<BinaryTree*>::const_iterator iter = nodesQueue.begin();
+	for (int i = 0; i < nodesInThisLevel; i++, iter++) {
+		out << ((i == 0) ? setw(startLen) : setw(nodeSpaceLen)) << "" << ((*iter && (*iter)->left) ? setfill('_') : setfill(' '));
+		out << setw(branchLen + 2) << ((*iter) ? intToString((*iter)->key) : "");
+		out << ((*iter && (*iter)->right) ? setfill('_') : setfill(' ')) << setw(branchLen) << "" << setfill(' ');
 	}
-	
+	out << endl;
+}
+
+// Print the leaves only (just for the bottom row)
+void printLeaves(int indentSpace, int level, int nodesInThisLevel, const deque<BinaryTree*>& nodesQueue, ostream& out) {
+	deque<BinaryTree*>::const_iterator iter = nodesQueue.begin();
+	for (int i = 0; i < nodesInThisLevel; i++, iter++) {
+		out << ((i == 0) ? setw(indentSpace + 2) : setw(2 * level + 2)) << ((*iter) ? intToString((*iter)->key) : "");
+	}
+	out << endl;
+}
+
+// Pretty formatting of a binary tree to the output stream
+// @ param
+// level  Control how wide you want the tree to sparse (eg, level 1 has the minimum space between nodes, while level 2 has a larger space between nodes)
+// indentSpace  Change this to add some indent space to the left (eg, indentSpace of 0 means the lowest level of the left node will stick to the left margin)
+void printPretty(BinaryTree *root, int level, int indentSpace, ostream& out) {
+	int h = maxHeight(root);
+	int nodesInThisLevel = 1;
+
+	int branchLen = 2 * ((int)pow(2.0, h) - 1) - (3 - level)*(int)pow(2.0, h - 1);  // eq of the length of branch for each node of each level
+	int nodeSpaceLen = 2 + (level + 1)*(int)pow(2.0, h);  // distance between left neighbor node's right arm and right neighbor node's left arm
+	int startLen = branchLen + (3 - level) + indentSpace;  // starting space to the first node to print of each level (for the left most node of each level only)
+
+	deque<BinaryTree*> nodesQueue;
+	nodesQueue.push_back(root);
+	for (int r = 1; r < h; r++) {
+		printBranches(branchLen, nodeSpaceLen, startLen, nodesInThisLevel, nodesQueue, out);
+		branchLen = branchLen / 2 - 1;
+		nodeSpaceLen = nodeSpaceLen / 2 + 1;
+		startLen = branchLen + (3 - level) + indentSpace;
+		printNodes(branchLen, nodeSpaceLen, startLen, nodesInThisLevel, nodesQueue, out);
+
+		for (int i = 0; i < nodesInThisLevel; i++) {
+			BinaryTree *currNode = nodesQueue.front();
+			nodesQueue.pop_front();
+			if (currNode) {
+				nodesQueue.push_back(currNode->left);
+				nodesQueue.push_back(currNode->right);
+			}
+			else {
+				nodesQueue.push_back(NULL);
+				nodesQueue.push_back(NULL);
+			}
+		}
+		nodesInThisLevel *= 2;
+	}
+	printBranches(branchLen, nodeSpaceLen, startLen, nodesInThisLevel, nodesQueue, out);
+	printLeaves(indentSpace, level, nodesInThisLevel, nodesQueue, out);
 }

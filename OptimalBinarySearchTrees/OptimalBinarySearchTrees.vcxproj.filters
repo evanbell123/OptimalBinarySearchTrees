@@ -26,12 +26,6 @@
     <ClInclude Include="OBSTComputationTable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Entry.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="BinaryTreePrint.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="SampleData1.txt">

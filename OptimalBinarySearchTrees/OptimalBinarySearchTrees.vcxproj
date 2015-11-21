@@ -121,8 +121,6 @@
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BinaryTreePrint.h" />
-    <ClInclude Include="Entry.h" />
     <ClInclude Include="Header.h" />
     <ClInclude Include="OBSTComputationTable.h" />
   </ItemGroup>
