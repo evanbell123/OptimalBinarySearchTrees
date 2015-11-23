@@ -3,7 +3,7 @@
 #include <math.h>
 //#include "BinaryTreePrint.h"
 
-void displayFrequencies(queue<int> frequencies);
+void displayFrequencies(vector<int> &frequencies);
 
 void printPretty(BinaryTree *root, int level, int indentSpace, ostream& out);
 // Print the arm branches (eg, /    \ ) on a line
@@ -27,10 +27,10 @@ void main()
 	size_t stringSize;
 	int frequency;
 
-	queue<int> *frequencies = new queue<int>;
+	vector<int> *frequencies = new vector<int>;
 	
 
-	ifstream myfile("SampleData2.txt");
+	ifstream myfile("SampleData1.txt");
 	if (myfile.is_open())
 	{
 		while (!myfile.eof() && line != "0")
@@ -40,7 +40,7 @@ void main()
 			frequency = stoi(line, &stringSize);
 			if (frequency != 0) 
 			{
-				frequencies->push(frequency); // add to queue
+				frequencies->push_back(frequency); // add to queue
 			}
 		}
 		myfile.close();
@@ -51,69 +51,18 @@ void main()
 	}
 
 	cout << "Total Frequencies = " << static_cast<int>(frequencies->size()) << endl;
+	displayFrequencies(*frequencies);
 
 	OBSTComputationTable *table = new OBSTComputationTable(frequencies);
-	
-	//table.display();
-	
 
 	BinaryTree *obst1 = table->getOBST();
 
 	printPretty(obst1, 1, 0, cout);
-
-	int worstCase = maxHeight(obst1);
-	int sumOfFrequencies = table->getSumOfFrequencies();
-	double averageTime = table->getAverageTime();
-
-	int totalFrequencies = static_cast<int>(frequencies->size());
-
-	vector<int> frequencyVector = table->getFrequencies();
-
-	double eOfX = table->getAverageTime();
-
-	double stdDev = computeStandardDeviationWrapper(obst1, frequencyVector, eOfX, sumOfFrequencies);
-
-	cout << "Best Case: 1" << endl;
-	cout << "Average Case: " << averageTime << endl;
-	cout << "Worst Case: " << worstCase << endl;
-	cout << "Standard Deviation = " << stdDev << endl << endl;
-	
-	table->displayNodeInfoWrapper();
-
-	
 	
 	delete frequencies;
+	delete obst1;
 
-	/*
-	vector<int> testFrequencies{ 6,6,8,7,5,4,4,6 };
-
-
-	BinaryTree *testStdDev;
-	testStdDev = new BinaryTree(4, 7, 1);
-	testStdDev->left = new BinaryTree(2, 6, 2);
-	testStdDev->right = new BinaryTree(6, 4, 2);
-	testStdDev->left->left = new BinaryTree(1, 6, 3);
-	testStdDev->left->left->left = new BinaryTree(-1, 0, 0);
-	testStdDev->left->left->right = new BinaryTree(-1, 0, 0);
-	testStdDev->left->right = new BinaryTree(3, 8, 3);
-	testStdDev->left->right->left = new BinaryTree(-1, 0, 0);
-	testStdDev->left->right->right = new BinaryTree(-1, 0, 0);
-	testStdDev->right->left = new BinaryTree(5, 5, 3);
-	testStdDev->right->left->left = new BinaryTree(-1, 0, 0);
-	testStdDev->right->left->right = new BinaryTree(-1, 0, 0);
-	testStdDev->right->right = new BinaryTree(8, 6, 3);
-	testStdDev->right->right->left = new BinaryTree(7, 4, 4);
-	testStdDev->right->right->right = new BinaryTree(-1, 0, 0);
-	testStdDev->right->right->left->left = new BinaryTree(-1, 0, 0);
-	testStdDev->right->right->left->right = new BinaryTree(-1, 0, 0);
-
-	printPretty(testStdDev, 1, 0, cout);
-
-	double eOfXTest = (118.0 / 46.0);
-	cout << eOfXTest << endl;
-	double stdDevTest = computeStandardDeviationWrapper(testStdDev, testFrequencies, eOfXTest, 46);
-	cout << stdDevTest << endl;
-	*/
+	
 	system("pause");
 }
 
@@ -135,12 +84,11 @@ int computeEOfXSquared(BinaryTree *root, vector<int> frequencies)
 	
 }
 
-void displayFrequencies(queue<int> frequencies)
+void displayFrequencies(vector<int> &frequencies)
 {
-	while (!frequencies.empty())
+	for (int i = 0; i < frequencies.size(); i++)
 	{
-		cout << frequencies.front() << ", ";
-		frequencies.pop();
+		cout << frequencies[i] << ", ";
 	}
 	cout << endl;
 }
