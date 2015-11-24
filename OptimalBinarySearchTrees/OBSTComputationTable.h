@@ -110,9 +110,8 @@ private:
 
 		if (column != 1) 
 		{
-			OBST->right = constructOBST(optimalRoot, , level + 1);
- 			OBST->left = constructOBST(row, optimalRoot - 1, level + 1);
-			
+			OBST->left = constructOBST(row, abs(optimalRoot - row - 1), level + 1);
+			OBST->right = constructOBST(optimalRoot, abs(optimalRoot - column), level + 1);
 		}
 
 		return OBST;

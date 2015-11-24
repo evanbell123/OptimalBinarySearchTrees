@@ -60,6 +60,8 @@ void main()
 	BinaryTree *obst1 = table->getOBST();
 
 	printPretty(obst1, 1, 0, cout);
+
+	table->displayNodeInfoWrapper();
 	
 	delete frequencies;
 	delete obst1;
