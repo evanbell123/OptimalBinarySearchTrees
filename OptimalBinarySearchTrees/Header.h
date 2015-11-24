@@ -12,12 +12,14 @@ struct BinaryTree {
 	int key;
 	int freq;
 	int level;
-	double eOfXSquared; // E[X^2]
+	
+	BinaryTree(int lev) : left(NULL), right(NULL), key(-1), freq(-1), level(lev) {}
 
-	BinaryTree(int k, int val, int lev) : left(NULL), right(NULL), key(k), freq(val), level(lev)
-	{
-		eOfXSquared = level*level*freq;
-	}
+	BinaryTree(int k, int val, int lev) : left(NULL), right(NULL), key(k), freq(val), level(lev) {}
+
+	void setKey(int k) { key = k; }
+	void setFreq(int f) { freq = f; }
+	void setLevel(int lev) { level = lev; }
 
 	~BinaryTree()
 	{
@@ -41,63 +43,31 @@ class Entry
 private:
 	int minFrequency;
 	int minComparisons;
-	queue <int> optimalRoots;
+	int optimalRoot; // equivalent optimal roots
 public:
-	Entry() : minFrequency(0), minComparisons(0) {};
-	Entry(int mFrequency) : minFrequency(mFrequency), minComparisons(0) {};
-	Entry(int mFrequency, int mComparisons) : minFrequency(mFrequency), minComparisons(mComparisons) {};
-	Entry(int mFrequency, int mComparisons, int opRoot) : minFrequency(mFrequency), minComparisons(mComparisons)
-	{
-		pushOptimalRoot(opRoot);
-	};
-	Entry(int mWeight, int mComparisons, queue<int> opRoots) : minFrequency(mWeight), minComparisons(mComparisons)
-	{
-		swap(optimalRoots, opRoots);
-	};
+	Entry() : minFrequency(0), minComparisons(0), optimalRoot(0) {};
+	//Entry(int mFrequency) : minFrequency(mFrequency), minComparisons(0) {};
+	//Entry(int mFrequency, int mComparisons) : minFrequency(mFrequency), minComparisons(mComparisons) {};
+	Entry(int mFrequency, int mComparisons, int opRoot) : minFrequency(mFrequency), minComparisons(mComparisons), optimalRoot(opRoot) {};
 
 	const int getMinFrequency() const { return minFrequency; };
 	const int getMinComparisons() const { return minComparisons; };
-	queue <int> getAllOptimalRoots() { return optimalRoots; };
+	const int getOptimalRoot() const { return optimalRoot; };
 
-	void popOptimalRoot()
-	{
-		if (!optimalRoots.empty())
-		{
-			optimalRoots.pop();
-		}
-	}
+	/*
+	void setMinFrequency(int mFreq) { minFrequency = mFreq; };
+	void setMinComparisons(int mComp) { minComparisons = mComp; };
+	void setOptimalRoot(int opRoot) { optimalRoot = opRoot; };
+	*/
 
-	Entry getSelf()
-	{
-		return *this;
-	}
-
-	int getOptimalRoot()
-	{
-		return optimalRoots.front();
-	}
-
-	void setMinFrequency(int mWeight) { minFrequency = mWeight; };
-	void setMinComparisons(int mComparisons) { minComparisons = mComparisons; };
-	void setOptimalRoots(queue<int> opRoots) { swap(optimalRoots, opRoots); };
-
-
-	void pushOptimalRoot(int root) { optimalRoots.push(root); };
 	void print(int width)
 	{
-		queue <int> temp = optimalRoots;
 		cout << setw(width) << '|'
 			<< "F = " << minFrequency << endl
 			<< setw(width) << '|'
 			<< "C = " << minComparisons << endl
 			<< setw(width) << '|'
-			<< "R = ";
-		while (!temp.empty())
-		{
-			cout << temp.front() << " ";
-			temp.pop();
-		}
-		cout << endl;
+			<< "R = " << optimalRoot << endl;
 	};
 
 };

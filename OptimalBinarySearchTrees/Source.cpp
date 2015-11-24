@@ -3,7 +3,7 @@
 #include <math.h>
 //#include "BinaryTreePrint.h"
 
-void displayFrequencies(vector<int> &frequencies);
+void displayFrequencies(vector<int> *frequencies);
 
 void printPretty(BinaryTree *root, int level, int indentSpace, ostream& out);
 // Print the arm branches (eg, /    \ ) on a line
@@ -14,9 +14,9 @@ void printNodes(int branchLen, int nodeSpaceLen, int startLen, int nodesInThisLe
 void printLeaves(int indentSpace, int level, int nodesInThisLevel, const deque<BinaryTree*>& nodesQueue, ostream& out);
 int maxHeight(BinaryTree *p);
 
-double computeStandardDeviationWrapper(BinaryTree *root, vector<int> frequencies, double eOfX, int sumOfFrequencies);
+double computeStandardDeviationWrapper(BinaryTree *root, vector<int> *frequencies, double eOfX, int sumOfFrequencies);
 
-int computeEOfXSquared(BinaryTree *root, vector<int> frequencies);
+int computeEOfXSquared(BinaryTree *root, vector<int> *frequencies);
 
 
 
@@ -26,10 +26,8 @@ void main()
 	string line;
 	size_t stringSize;
 	int frequency;
-
 	vector<int> *frequencies = new vector<int>;
 	
-
 	ifstream myfile("SampleData1.txt");
 	if (myfile.is_open())
 	{
@@ -51,48 +49,60 @@ void main()
 	}
 
 	cout << "Total Frequencies = " << static_cast<int>(frequencies->size()) << endl;
-	displayFrequencies(*frequencies);
+	displayFrequencies(frequencies);
 
 	OBSTComputationTable *table = new OBSTComputationTable(frequencies);
 
-	table->displayTable();
+	//table->displayTable();
+	
+	BinaryTree *obst = table->getOBST();
 
-	BinaryTree *obst1 = table->getOBST();
+	printPretty(obst, 1, 0, cout);
 
-	printPretty(obst1, 1, 0, cout);
+	
+	double averageCase = table->getAverageTime();
+	int worstCase = maxHeight(obst);
+	//double stdDev = computeStandardDeviationWrapper(obst, frequencies, averageCase, table->getSumOfFrequencies());
+	
+	cout << "Best Case: 1" << endl
+		<< "Average Case: " << setprecision(3) << averageCase << endl
+		<< "Worst Case: " << worstCase << endl;
+		//<< "Standard Deviation: " << stdDev << endl;
 
 	table->displayNodeInfoWrapper();
 	
-	delete frequencies;
-	delete obst1;
+	
 
 	
 	system("pause");
+
+	delete frequencies;
+	delete table;
 }
 
-double computeStandardDeviationWrapper(BinaryTree *root, vector<int> frequencies, double eOfX, int sumOfFrequencies)
+double computeStandardDeviationWrapper(BinaryTree *root, vector<int> *frequencies, double eOfX, int sumOfFrequencies)
 {
 	double eOfXSquared = computeEOfXSquared(root, frequencies) / double(sumOfFrequencies);
 	return sqrt(eOfXSquared - (eOfX*eOfX));
 }
 
-int computeEOfXSquared(BinaryTree *root, vector<int> frequencies)
+int computeEOfXSquared(BinaryTree *root, vector<int> *frequencies)
 {
-	int key = root->key;
-	int level = root->level;
-	if (key != -1)
+	int level;
+	if (root != NULL)
 	{
-		return (level*level*frequencies[key-1]) + computeEOfXSquared(root->left, frequencies) + computeEOfXSquared(root->right, frequencies);
+		level = root->level;
+		return (level*level*frequencies->at(root->key-1)) + computeEOfXSquared(root->left, frequencies) + computeEOfXSquared(root->right, frequencies);
 	}
 	return 0;
 	
 }
 
-void displayFrequencies(vector<int> &frequencies)
+void displayFrequencies(vector<int> *frequencies)
 {
-	for (int i = 0; i < frequencies.size(); i++)
+	for (int i = 0; i < frequencies->size(); i++)
 	{
-		cout << frequencies[i] << ", ";
+		cout << frequencies->at(i) << ", ";
 	}
 	cout << endl;
 }

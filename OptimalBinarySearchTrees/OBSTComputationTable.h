@@ -2,8 +2,6 @@
 #include "Header.h"
 #include <ctime>
 
-//typedef pair<int, int> Key;
-//typedef map<Key, Entry> LookupTable;
 typedef vector<vector<Entry>> LookupTable;
 
 class OBSTComputationTable
@@ -11,8 +9,8 @@ class OBSTComputationTable
 private:
 	LookupTable table;
 	BinaryTree *obst; //optimal binary search tree
-	int totalFrequencies;
-	int sumOfFrequencies;
+	unsigned int totalFrequencies;
+	unsigned int sumOfFrequencies;
 	double averageTime;
 	clock_t start;
 
@@ -25,16 +23,15 @@ private:
 	double computeAverageTime()
 	{
 		Entry lastEntry = table[0][totalFrequencies];
-		return lastEntry.getMinComparisons() / lastEntry.getMinFrequency();
+		return lastEntry.getMinComparisons() / double(lastEntry.getMinFrequency());
 	}
 
 	void computeLookupTable(vector<int> *freqVector)
 	{
 		initializeLookupTable(freqVector);
 
-		int diagonal, row, i;
-		int freq, comparisons, minComparisons;
-		queue<int> roots;
+		unsigned int diagonal, row, i;
+		unsigned int freq, comparisons, minComparisons, root;
 
 		for (diagonal = 2; diagonal <= totalFrequencies; ++diagonal)
 		{
@@ -43,28 +40,22 @@ private:
 				Entry E1 = table[row + 1][diagonal - 1];
 				freq = table[row][1].getMinFrequency() + E1.getMinFrequency();
 				minComparisons = table[row][0].getMinComparisons() + E1.getMinComparisons();
-				roots.push(row + 1);
+				root = row + 1;
 
 
 				for (i = 2; i <= diagonal; ++i)
 				{
 					comparisons = table[row][i - 1].getMinComparisons() + table[row + i][diagonal - i].getMinComparisons();
-					if (comparisons == minComparisons)
-					{
-						roots.push(row + i);
-					}
 					if (comparisons < minComparisons)
 					{
-						clearQueue(roots);
-						roots.push(row + i);
+						root = row + i;
 						minComparisons = comparisons;
 					}
 
 
 				}
 				minComparisons += freq;
-				table[row].push_back(Entry(freq, minComparisons, roots));
-				clearQueue(roots);
+				table[row].push_back(Entry(freq, minComparisons, root));
 			}
 
 			timeMarker("Computed diagonal # " + intToString(diagonal));
@@ -75,7 +66,7 @@ private:
 	void initializeLookupTable(vector<int> *freq)
 	{
 		//vector<Entry> newRow;
-		int row, frequency;
+		unsigned int row, frequency;
 
 		for (row = 0; row < totalFrequencies; ++row)
 		{
@@ -99,22 +90,47 @@ private:
 
 	}
 
+	BinaryTree *constructOBSTWrapper()
+	{
+		cout << setw(10) << "Row" << setw(10) << "Column" << setw(10) << "Root" << setw(10) << "Row Size" << setw(10) << "Method" << endl;
+		return constructOBST(0, totalFrequencies, 1);
+	}
+
 	//row must be initialized to 0
 	//column must be initialized to the total number of frequencies
 	//level must be initialized to 1
 	BinaryTree *constructOBST(int  row, int column, int level)
 	{
-		int optimalRoot = table[row][column].getOptimalRoot();
-		int freq = table[row][column].getMinFrequency();
-		BinaryTree *OBST = new BinaryTree(optimalRoot, freq, level);
-
-		if (column != 1) 
+		BinaryTree *root = new BinaryTree(level);
+		if (column != 0)
 		{
-			OBST->left = constructOBST(row, abs(optimalRoot - row - 1), level + 1);
-			OBST->right = constructOBST(optimalRoot, abs(optimalRoot - column), level + 1);
+			cout << setw(10) << row << setw(10) << column << setw(10);
+
+			Entry *entry = &table[row][column];
+			int optimalRoot = entry->getOptimalRoot();
+			int freq = entry->getMinFrequency();
+
+			cout << optimalRoot << setw(10) << table[row].size() << setw(10);
+
+			root->setFreq(freq);
+			root->setKey(optimalRoot);
+
+			cout << "Left" << endl;
+			root->left = constructOBST(row, abs(optimalRoot - row - 1), level + 1);
+			if (row >= column)
+			{
+				cout << "Right1" << endl;
+				root->right = constructOBST(optimalRoot, abs(optimalRoot - row - 1), level + 1);
+			}
+			else
+			{
+				cout << "Right2" << endl;
+				root->right = constructOBST(optimalRoot, abs(optimalRoot - column), level + 1);
+			}
+
 		}
 
-		return OBST;
+		return root;
 	}
 public:
 	OBSTComputationTable(vector<int> *frequencies)
@@ -124,7 +140,7 @@ public:
 		sumOfFrequencies = 0;
 		computeLookupTable(frequencies);
 		averageTime = computeAverageTime();
-		obst = constructOBST(0, static_cast<int>(totalFrequencies), 1);
+		obst = constructOBSTWrapper();
 	}
 
 	~OBSTComputationTable()
@@ -147,7 +163,7 @@ public:
 		return sumOfFrequencies;
 	}
 
-	size_t getTotalFrequencies()
+	int getTotalFrequencies()
 	{
 		return totalFrequencies;
 	}
@@ -159,8 +175,8 @@ public:
 
 	void displayTable()
 	{
-		int row, column;
-		int width = 10;
+		unsigned int row, column;
+		unsigned int width = 10;
 		for (row = 0; row <= totalFrequencies; ++row)
 		{
 			for (column = 0; column < table[row].size(); ++column)
@@ -174,17 +190,16 @@ public:
 	void displayNodeInfoWrapper()
 	{
 		int width = 15;
-		cout << setw(width) << "Key" << setw(width) << "Freq" << setw(width) << "Level" << setw(width) << "E[X^2]" << setw(width) << endl;
+		cout << setw(width) << "Key" << setw(width) << "Freq" << setw(width) << "Level" << setw(width) << endl;
 
 		displayNodeInfo(obst, width);
 	}
 
 	void displayNodeInfo(BinaryTree *root, int width)
 	{
-		int key = root->key;
-		if (key > -1)
+		if (root != NULL)
 		{
-			cout << root->key << setw(width) << root->freq << setw(width) << root->level << setw(width) << root->eOfXSquared << setw(width) << endl;
+			cout << root->key << setw(width) << root->freq << setw(width) << root->level << setw(width) << endl;
 			displayNodeInfo(root->left, width);
 			displayNodeInfo(root->right, width);
 		}
