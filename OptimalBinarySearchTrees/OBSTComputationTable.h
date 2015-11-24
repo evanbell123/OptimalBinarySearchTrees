@@ -11,7 +11,7 @@ class OBSTComputationTable
 private:
 	LookupTable table;
 	BinaryTree *obst; //optimal binary search tree
-	size_t totalFrequencies;
+	int totalFrequencies;
 	int sumOfFrequencies;
 	double averageTime;
 	clock_t start;
@@ -108,10 +108,11 @@ private:
 		int freq = table[row][column].getMinFrequency();
 		BinaryTree *OBST = new BinaryTree(optimalRoot, freq, level);
 
-		if (column != 0)
+		if (column != 1) 
 		{
-			OBST->left = constructOBST(row, optimalRoot - 1, level + 1);
-			OBST->right = constructOBST(optimalRoot + 1, column, level + 1);
+			OBST->right = constructOBST(optimalRoot, , level + 1);
+ 			OBST->left = constructOBST(row, optimalRoot - 1, level + 1);
+			
 		}
 
 		return OBST;
@@ -120,7 +121,7 @@ public:
 	OBSTComputationTable(vector<int> *frequencies)
 	{
 		start = clock();
-		totalFrequencies = frequencies->size();
+		totalFrequencies = static_cast<int>(frequencies->size());
 		sumOfFrequencies = 0;
 		computeLookupTable(frequencies);
 		averageTime = computeAverageTime();

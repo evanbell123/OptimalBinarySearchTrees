@@ -55,6 +55,8 @@ void main()
 
 	OBSTComputationTable *table = new OBSTComputationTable(frequencies);
 
+	table->displayTable();
+
 	BinaryTree *obst1 = table->getOBST();
 
 	printPretty(obst1, 1, 0, cout);
