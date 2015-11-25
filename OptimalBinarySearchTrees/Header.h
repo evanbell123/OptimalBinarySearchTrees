@@ -45,7 +45,7 @@ private:
 	int minComparisons;
 	int optimalRoot; // equivalent optimal roots
 public:
-	Entry() : minFrequency(0), minComparisons(0), optimalRoot(0) {};
+	Entry() : minFrequency(0), minComparisons(0), optimalRoot(-1) {};
 	//Entry(int mFrequency) : minFrequency(mFrequency), minComparisons(0) {};
 	//Entry(int mFrequency, int mComparisons) : minFrequency(mFrequency), minComparisons(mComparisons) {};
 	Entry(int mFrequency, int mComparisons, int opRoot) : minFrequency(mFrequency), minComparisons(mComparisons), optimalRoot(opRoot) {};

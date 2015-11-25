@@ -54,6 +54,7 @@ void main()
 
 	//table->displayTable();
 	
+	//table->displayNodeInfoWrapper();
 	BinaryTree *obst = table->getOBST();
 
 	printPretty(obst, 1, 0, cout);
@@ -61,14 +62,14 @@ void main()
 	
 	double averageCase = table->getAverageTime();
 	int worstCase = maxHeight(obst);
-	//double stdDev = computeStandardDeviationWrapper(obst, frequencies, averageCase, table->getSumOfFrequencies());
+	double stdDev = computeStandardDeviationWrapper(obst, frequencies, averageCase, table->getSumOfFrequencies());
 	
 	cout << "Best Case: 1" << endl
 		<< "Average Case: " << setprecision(3) << averageCase << endl
-		<< "Worst Case: " << worstCase << endl;
-		//<< "Standard Deviation: " << stdDev << endl;
+		<< "Worst Case: " << worstCase << endl
+		<< "Standard Deviation: " << stdDev << endl;
 
-	//table->displayNodeInfoWrapper();
+	
 	
 	
 
@@ -88,7 +89,7 @@ double computeStandardDeviationWrapper(BinaryTree *root, vector<int> *frequencie
 int computeEOfXSquared(BinaryTree *root, vector<int> *frequencies)
 {
 	int level;
-	if (root != NULL)
+	if (root->key != -1)
 	{
 		level = root->level;
 		return (level*level*frequencies->at(root->key-1)) + computeEOfXSquared(root->left, frequencies) + computeEOfXSquared(root->right, frequencies);
