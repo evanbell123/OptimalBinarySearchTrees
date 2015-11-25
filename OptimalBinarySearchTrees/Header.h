@@ -12,7 +12,7 @@ struct BinaryTree {
 	int key;
 	int freq;
 	int level;
-	
+	 
 	BinaryTree(int lev) : left(NULL), right(NULL), key(-1), freq(-1), level(lev) {}
 
 	BinaryTree(int k, int val, int lev) : left(NULL), right(NULL), key(k), freq(val), level(lev) {}

@@ -101,32 +101,46 @@ private:
 	//level must be initialized to 1
 	BinaryTree *constructOBST(int  row, int column, int level)
 	{
+		int i = row + 1;
+		int j = column + row;
 		BinaryTree *root = new BinaryTree(level);
 		if (column != 0)
 		{
-			cout << setw(10) << row << setw(10) << column << setw(10);
-
 			Entry *entry = &table[row][column];
 			int optimalRoot = entry->getOptimalRoot();
 			int freq = entry->getMinFrequency();
 
-			cout << optimalRoot << setw(10) << table[row].size() << setw(10);
-
 			root->setFreq(freq);
 			root->setKey(optimalRoot);
 
-			cout << "Left" << endl;
-			root->left = constructOBST(row, abs(optimalRoot - row - 1), level + 1);
-			if (row >= column)
+			i = row + 1;
+			j = column + row;
+			
+			//root->left = constructOBST(row, abs(optimalRoot - row - 1), level + 1);
+			if (optimalRoot == j)
 			{
-				cout << "Right1" << endl;
-				root->right = constructOBST(optimalRoot, abs(optimalRoot - row - 1), level + 1);
+
+				root->left = constructOBST(row, column - 1, level + 1);
+				root->right = new BinaryTree(level + 1);
+			}
+			else if (optimalRoot == i)
+			{
+				root->left = new BinaryTree(level + 1);
+				root->right = constructOBST(row + 1, column - 1, level - 1);
 			}
 			else
 			{
-				cout << "Right2" << endl;
-				root->right = constructOBST(optimalRoot, abs(optimalRoot - column), level + 1);
+				root->left = constructOBST(row, abs(optimalRoot - row - 1), level + 1);
+				if (row > column)
+				{
+					root->right = constructOBST(optimalRoot, abs(optimalRoot - i), level + 1);
+				}
+				else
+				{
+					root->right = constructOBST(optimalRoot, abs(optimalRoot - j), level + 1);
+				}
 			}
+			cout << endl;
 
 		}
 

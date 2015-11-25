@@ -1,7 +1,6 @@
 #include "OBSTComputationTable.h"
 #include <fstream>
 #include <math.h>
-//#include "BinaryTreePrint.h"
 
 void displayFrequencies(vector<int> *frequencies);
 
@@ -28,7 +27,7 @@ void main()
 	int frequency;
 	vector<int> *frequencies = new vector<int>;
 	
-	ifstream myfile("SampleData1.txt");
+	ifstream myfile("SampleData2.txt");
 	if (myfile.is_open())
 	{
 		while (!myfile.eof() && line != "0")
@@ -69,7 +68,7 @@ void main()
 		<< "Worst Case: " << worstCase << endl;
 		//<< "Standard Deviation: " << stdDev << endl;
 
-	table->displayNodeInfoWrapper();
+	//table->displayNodeInfoWrapper();
 	
 	
 
