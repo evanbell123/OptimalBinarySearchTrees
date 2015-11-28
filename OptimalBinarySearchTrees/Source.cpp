@@ -1,101 +1,125 @@
-#include "OBSTComputationTable.h"
+#include "OBSTComputation.h"
 #include <fstream>
+#include <cstring>
 #include <math.h>
 
-void displayFrequencies(vector<int> *frequencies);
 
-void printPretty(BinaryTree *root, int level, int indentSpace, ostream& out);
+vector<int> *readFrequencies(string fileName);
+
+void displayOBSTInfo(OBSTComputation *obstComp);
+void displayFrequencies(vector<int> *frequencies);
+void displayQueue(queue<int> q);
+
+queue<int> levelOrderTraversalWrapper(BinaryTree *root, int maxElements);
+void levelOrderTraversal(BinaryTree *root, queue<int> &traversal, int level);
+
+/*
+The following functions are used to print a binary tree.
+I didn't write printPretty, printBracnches, printNodes, printLeaves, or maxHeight
+I used this code for fun.
+http://articles.leetcode.com/2010/09/how-to-pretty-print-binary-tree.html
+*/
+void printPretty(BinaryTree *root, int level, int indentSpace, ostream& out); //printPretty(obst, 1, 0, cout);
 // Print the arm branches (eg, /    \ ) on a line
 void printBranches(int branchLen, int nodeSpaceLen, int startLen, int nodesInThisLevel, const deque<BinaryTree*>& nodesQueue, ostream& out);
 // Print the branches and node (eg, ___10___ )
 void printNodes(int branchLen, int nodeSpaceLen, int startLen, int nodesInThisLevel, const deque<BinaryTree*>& nodesQueue, ostream& out);
 // Print the leaves only (just for the bottom row)
 void printLeaves(int indentSpace, int level, int nodesInThisLevel, const deque<BinaryTree*>& nodesQueue, ostream& out);
+
 int maxHeight(BinaryTree *p);
-
-double computeStandardDeviationWrapper(BinaryTree *root, vector<int> *frequencies, double eOfX, int sumOfFrequencies);
-
-int computeEOfXSquared(BinaryTree *root, vector<int> *frequencies);
-
-
 
 void main()
 {
 
+	//vector<vector<int>*> *datasets;
+	//vector<int> *frequencies;
+
+	//datasets = new vector<vector<int>*>;
+	//frequencies = new vector<int>;
+
+	vector<OBSTComputation*> *obstComputationVector;
+	//OBSTComputation *obstComputation;
+
+	obstComputationVector = new vector<OBSTComputation*>;
+
+	string fileName = "dataset";
+	string fileExt = ".txt";
+	string fullFileName;
+
+	for (int i = 0; i < 6; i++)
+	{
+		fullFileName = fileName + intToString(i+1) + fileExt;
+		//obstComputation = new OBSTComputation(readFrequencies(fullFileName));
+		obstComputationVector->push_back(new OBSTComputation(readFrequencies(fullFileName)));
+	}
+
+	//delete obstComputation;
+
+	for (int i = 0; i < 6; i++)
+	{
+		cout << fileName + intToString(i + 1) + fileExt << endl;
+		displayOBSTInfo(obstComputationVector->at(i));
+		cout << endl;
+
+		delete obstComputationVector->at(i);
+	}
+
+	delete obstComputationVector;
+
+	system("pause");
+
+
+}
+
+void displayOBSTInfo(OBSTComputation *obstComp)
+{
+	BinaryTree *obst = obstComp->getOBST();
+	double timeTaken = obstComp->getTimeTaken();
+	double averageCase = obstComp->getAverageTime();
+	int worstCase = maxHeight(obst) - 1;
+	double stdDev = obstComp->getStandardDeviation();
+	double eOfXSquared = obstComp->getEOfXSquared();
+	queue<int> inorderTraversal = levelOrderTraversalWrapper(obst, 7);
+
+	cout << "Level Order Traversal: ";
+	displayQueue(inorderTraversal);
+	cout << "Program completed in " << timeTaken << " seconds" << endl
+		<< "Total Frequencies: " << obstComp->getTotalFrequencies() << endl
+		<< "Best Case: 1" << endl
+		<< "Average Case: " << setprecision(3) << averageCase << endl
+		<< "Worst Case: " << worstCase << endl
+		<< "E[X^2] = " << eOfXSquared << endl
+		<< "Standard Deviation: " << stdDev << endl
+		<< "Sum of Frequencies: " << obstComp->getSumOfFrequencies() << endl;
+}
+
+vector<int> *readFrequencies(string fileName)
+{
+	ifstream inFile(fileName); //the first character in the file must be a space
 	string line;
 	size_t stringSize;
+	vector<int> *freqVector = new vector<int>;
 	int frequency;
-	vector<int> *frequencies = new vector<int>;
-	
-	ifstream myfile("SampleData2.txt");
-	if (myfile.is_open())
+	if (inFile.is_open())
 	{
-		while (!myfile.eof() && line != "0")
+		while (!inFile.eof() && line != "0")
 		{
-			getline(myfile, line, ','); //get next frequency
+			getline(inFile, line, ','); //get next frequency
 			line.erase(0, 1); // remove the space
 			frequency = stoi(line, &stringSize);
-			if (frequency != 0) 
+			if (freqVector != 0)
 			{
-				frequencies->push_back(frequency); // add to queue
+				freqVector->push_back(frequency); // add to queue
 			}
 		}
-		myfile.close();
+		inFile.close();
 	}
 	else
 	{
 		cout << "Unable to open file";
 	}
-
-	cout << "Total Frequencies = " << static_cast<int>(frequencies->size()) << endl;
-	displayFrequencies(frequencies);
-
-	OBSTComputationTable *table = new OBSTComputationTable(frequencies);
-
-	//table->displayTable();
-	
-	//table->displayNodeInfoWrapper();
-	BinaryTree *obst = table->getOBST();
-
-	printPretty(obst, 1, 0, cout);
-
-	
-	double averageCase = table->getAverageTime();
-	int worstCase = maxHeight(obst);
-	double stdDev = computeStandardDeviationWrapper(obst, frequencies, averageCase, table->getSumOfFrequencies());
-	
-	cout << "Best Case: 1" << endl
-		<< "Average Case: " << setprecision(3) << averageCase << endl
-		<< "Worst Case: " << worstCase << endl
-		<< "Standard Deviation: " << stdDev << endl;
-
-	
-	
-	
-
-	
-	system("pause");
-
-	delete frequencies;
-	delete table;
-}
-
-double computeStandardDeviationWrapper(BinaryTree *root, vector<int> *frequencies, double eOfX, int sumOfFrequencies)
-{
-	double eOfXSquared = computeEOfXSquared(root, frequencies) / double(sumOfFrequencies);
-	return sqrt(eOfXSquared - (eOfX*eOfX));
-}
-
-int computeEOfXSquared(BinaryTree *root, vector<int> *frequencies)
-{
-	int level;
-	if (root->key != -1)
-	{
-		level = root->level;
-		return (level*level*frequencies->at(root->key-1)) + computeEOfXSquared(root->left, frequencies) + computeEOfXSquared(root->right, frequencies);
-	}
-	return 0;
-	
+	return freqVector;
 }
 
 void displayFrequencies(vector<int> *frequencies)
@@ -106,6 +130,46 @@ void displayFrequencies(vector<int> *frequencies)
 	}
 	cout << endl;
 }
+
+void displayQueue(queue<int> q)
+{
+	while (!q.empty())
+	{
+		cout << q.front() << ", ";
+		q.pop();
+	}
+	cout << endl;
+}
+
+queue<int> levelOrderTraversalWrapper(BinaryTree *root, int maxElements)
+{
+	queue<int> traversal;
+	int level = 1;
+	while (traversal.size() < maxElements)
+	{
+		levelOrderTraversal(root, traversal, level);
+		level++;
+	}
+	return traversal;
+}
+
+void levelOrderTraversal(BinaryTree *root, queue<int> &traversal, int level)
+{
+	if (root == NULL)
+	{
+		return;
+	}
+	if (level == 1)
+	{
+		traversal.push(root->key);
+	}
+	else
+	{
+		levelOrderTraversal(root->left, traversal, level - 1);
+		levelOrderTraversal(root->right, traversal, level - 1);
+	}
+}
+
 
 // Find the maximum height of the binary tree
 int maxHeight(BinaryTree *p) {

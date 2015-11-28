@@ -122,11 +122,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header.h" />
-    <ClInclude Include="OBSTComputationTable.h" />
+    <ClInclude Include="OBSTComputation.h" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="dataset1.txt" />
+    <Text Include="dataset2.txt" />
+    <Text Include="dataset3.txt" />
+    <Text Include="dataset4.txt" />
+    <Text Include="dataset5.txt" />
+    <Text Include="dataset6.txt" />
     <Text Include="SampleData1.txt" />
-    <Text Include="SampleData2.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

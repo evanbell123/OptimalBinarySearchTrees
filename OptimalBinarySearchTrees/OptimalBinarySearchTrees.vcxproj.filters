@@ -23,7 +23,7 @@
     <ClInclude Include="Header.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="OBSTComputationTable.h">
+    <ClInclude Include="OBSTComputation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -31,7 +31,22 @@
     <Text Include="SampleData1.txt">
       <Filter>Resource Files</Filter>
     </Text>
-    <Text Include="SampleData2.txt">
+    <Text Include="dataset1.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="dataset2.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="dataset3.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="dataset4.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="dataset5.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="dataset6.txt">
       <Filter>Resource Files</Filter>
     </Text>
   </ItemGroup>
