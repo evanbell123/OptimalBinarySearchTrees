@@ -49,5 +49,11 @@
     <Text Include="dataset6.txt">
       <Filter>Resource Files</Filter>
     </Text>
+    <Text Include="SampleData2.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="SampleData3.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
 </Project>

@@ -43,22 +43,14 @@ class Entry
 private:
 	int minFrequency;
 	int minComparisons;
-	int optimalRoot; // equivalent optimal roots
+	int optimalRoot;
 public:
 	Entry() : minFrequency(0), minComparisons(0), optimalRoot(-1) {};
-	//Entry(int mFrequency) : minFrequency(mFrequency), minComparisons(0) {};
-	//Entry(int mFrequency, int mComparisons) : minFrequency(mFrequency), minComparisons(mComparisons) {};
 	Entry(int mFrequency, int mComparisons, int opRoot) : minFrequency(mFrequency), minComparisons(mComparisons), optimalRoot(opRoot) {};
 
 	const int getMinFrequency() const { return minFrequency; };
 	const int getMinComparisons() const { return minComparisons; };
 	const int getOptimalRoot() const { return optimalRoot; };
-
-	/*
-	void setMinFrequency(int mFreq) { minFrequency = mFreq; };
-	void setMinComparisons(int mComp) { minComparisons = mComp; };
-	void setOptimalRoot(int opRoot) { optimalRoot = opRoot; };
-	*/
 
 	void print(int width)
 	{

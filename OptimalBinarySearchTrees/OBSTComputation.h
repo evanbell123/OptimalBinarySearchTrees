@@ -12,6 +12,7 @@ private:
 	size_t totalFrequencies;
 	vector<int> *freqVector;
 	unsigned int sumOfFrequencies;
+	unsigned int totalNodes; //used to double check correct construction of tree
 	double averageCase;
 	double eOfXSquared;
 	double standardDeviation;
@@ -63,7 +64,7 @@ private:
 	{
 		unsigned int row, frequency;
 
-		for (row = 0; row < totalFrequencies; ++row)
+		for (row = 0; row < totalFrequencies; ++row) // n
 		{
 			frequency = freqVector->at(row);
 			sumOfFrequencies += frequency; //keep track of sum of frequencies
@@ -88,8 +89,8 @@ private:
 	BinaryTree *constructOBST(int  row, int column, int level)
 	{
 		BinaryTree *root = new BinaryTree(level);
-		int i = row + 1;
-		int j = column + row;
+		int i = row + 1; //minimum optimal root
+		int j = column + row; // maximum optimal root
 		if (column != 0 && j <= totalFrequencies)
 		{
 			Entry *entry = &table[row][column];
@@ -99,20 +100,29 @@ private:
 			root->setFreq(freq);
 			root->setKey(optimalRoot);
 
+			totalNodes++;
+
 			eOfXSquared += ((level*level*freqVector->at(optimalRoot - 1)) / double(sumOfFrequencies));
 
 			root->left = constructOBST(row, abs(optimalRoot - i), level + 1);
-
+			
 			if (optimalRoot == j)
 			{
+				//root->right = constructOBST(optimalRoot, optimalRoot - j, level + 1);
+				//root->right = constructOBST(column - 1, row + 1, level + 1);
 				root->right = new BinaryTree(level + 1);
 			}
 			else if (optimalRoot == i)
 			{
-				root->right = constructOBST(row + 1, column, level + 1);
+				root->right = constructOBST(row + 1, column - 1, level + 1);
+				//root->right = constructOBST(optimalRoot - row, 1, level + 1);
+				//root->right = new BinaryTree(row + 1, column, level + 1);
+				//root->left = new BinaryTree(level + 1);
 			}
 			else
 			{
+				root->right = constructOBST(optimalRoot, abs(optimalRoot - j), level + 1);
+				/*
 				if (row > column)
 				{
 					root->right = constructOBST(optimalRoot, abs(optimalRoot - i), level + 1);
@@ -121,6 +131,7 @@ private:
 				{
 					root->right = constructOBST(optimalRoot, abs(optimalRoot - j), level + 1);
 				}
+				*/
 			}
 		}
 		return root;
@@ -131,6 +142,7 @@ public:
 		begin = clock();
 		freqVector = frequencies;
 		totalFrequencies = frequencies->size();
+		totalNodes = 0;
 		sumOfFrequencies = 0;
 		eOfXSquared = 0;
 
@@ -153,6 +165,11 @@ public:
 		return obst;
 	}
 
+	unsigned int getTotalNodes()
+	{
+		return totalNodes;
+	}
+
 	double getTimeTaken()
 	{
 		return timeTaken;
@@ -173,7 +190,7 @@ public:
 		return eOfXSquared;
 	}
 
-	int getSumOfFrequencies()
+	unsigned int getSumOfFrequencies()
 	{
 		return sumOfFrequencies;
 	}

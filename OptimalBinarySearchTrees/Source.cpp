@@ -10,6 +10,8 @@ void displayOBSTInfo(OBSTComputation *obstComp);
 void displayFrequencies(vector<int> *frequencies);
 void displayQueue(queue<int> q);
 
+void checkSizes(LookupTable table);
+
 queue<int> levelOrderTraversalWrapper(BinaryTree *root, int maxElements);
 void levelOrderTraversal(BinaryTree *root, queue<int> &traversal, int level);
 
@@ -31,32 +33,67 @@ int maxHeight(BinaryTree *p);
 
 void main()
 {
+	
+	/*
+	vector<int> *testFreqVec = readFrequencies("SampleData3.txt");
+	displayFrequencies(testFreqVec);
+	
+	OBSTComputation *testComp = new OBSTComputation(testFreqVec);
+	BinaryTree *testTree = testComp->getOBST();
 
-	//vector<vector<int>*> *datasets;
-	//vector<int> *frequencies;
+	LookupTable testTable = testComp->getLookupTable();
 
-	//datasets = new vector<vector<int>*>;
-	//frequencies = new vector<int>;
+	printPretty(testTree, 1, 0, cout);
 
+	displayOBSTInfo(testComp);
+
+	//testComp->displayTable();
+
+	//checkSizes(testComp->getLookupTable());
+
+	//testComp->displayNodeInfoWrapper();
+
+	
+
+
+
+
+	
+	//delete testFreqVec;
+	//delete testComp;
+	//delete testTree;
+	*/
+	
+	
 	vector<OBSTComputation*> *obstComputationVector;
-	//OBSTComputation *obstComputation;
 
 	obstComputationVector = new vector<OBSTComputation*>;
 
 	string fileName = "dataset";
 	string fileExt = ".txt";
 	string fullFileName;
+	
 
-	for (int i = 0; i < 6; i++)
+	const int TOTAL_DATASETS = 6;
+
+	/*
+	Read in frequencies from a file 
+	and compute optimal binary search trees
+	from multiple data sets and store them
+	*/
+	
+	for (int i = 0; i < TOTAL_DATASETS; i++)
 	{
 		fullFileName = fileName + intToString(i+1) + fileExt;
-		//obstComputation = new OBSTComputation(readFrequencies(fullFileName));
 		obstComputationVector->push_back(new OBSTComputation(readFrequencies(fullFileName)));
 	}
-
-	//delete obstComputation;
-
-	for (int i = 0; i < 6; i++)
+	
+	/*
+	Display information about the stored
+	optimal binary search trees.
+	*/
+	
+	for (int i = 0; i < TOTAL_DATASETS; i++)
 	{
 		cout << fileName + intToString(i + 1) + fileExt << endl;
 		displayOBSTInfo(obstComputationVector->at(i));
@@ -66,7 +103,8 @@ void main()
 	}
 
 	delete obstComputationVector;
-
+	
+	
 	system("pause");
 
 
@@ -86,12 +124,21 @@ void displayOBSTInfo(OBSTComputation *obstComp)
 	displayQueue(inorderTraversal);
 	cout << "Program completed in " << timeTaken << " seconds" << endl
 		<< "Total Frequencies: " << obstComp->getTotalFrequencies() << endl
+		<< "Total Nodes: " << obstComp->getTotalNodes() << endl
 		<< "Best Case: 1" << endl
 		<< "Average Case: " << setprecision(3) << averageCase << endl
 		<< "Worst Case: " << worstCase << endl
 		<< "E[X^2] = " << eOfXSquared << endl
 		<< "Standard Deviation: " << stdDev << endl
 		<< "Sum of Frequencies: " << obstComp->getSumOfFrequencies() << endl;
+}
+
+void checkSizes(LookupTable table)
+{
+	for (int i = 0; i < table.size(); i++)
+	{
+		cout << "Row # " << i << " = " << table[i].size() << endl;
+	}
 }
 
 vector<int> *readFrequencies(string fileName)
@@ -107,10 +154,10 @@ vector<int> *readFrequencies(string fileName)
 		{
 			getline(inFile, line, ','); //get next frequency
 			line.erase(0, 1); // remove the space
-			frequency = stoi(line, &stringSize);
-			if (freqVector != 0)
+			frequency = stoi(line, &stringSize); //convert to integer
+			if (frequency != 0)
 			{
-				freqVector->push_back(frequency); // add to queue
+				freqVector->push_back(frequency);
 			}
 		}
 		inFile.close();
