@@ -108,30 +108,15 @@ private:
 			
 			if (optimalRoot == j)
 			{
-				//root->right = constructOBST(optimalRoot, optimalRoot - j, level + 1);
-				//root->right = constructOBST(column - 1, row + 1, level + 1);
 				root->right = new BinaryTree(level + 1);
 			}
 			else if (optimalRoot == i)
 			{
 				root->right = constructOBST(row + 1, column - 1, level + 1);
-				//root->right = constructOBST(optimalRoot - row, 1, level + 1);
-				//root->right = new BinaryTree(row + 1, column, level + 1);
-				//root->left = new BinaryTree(level + 1);
 			}
 			else
 			{
 				root->right = constructOBST(optimalRoot, abs(optimalRoot - j), level + 1);
-				/*
-				if (row > column)
-				{
-					root->right = constructOBST(optimalRoot, abs(optimalRoot - i), level + 1);
-				}
-				else
-				{
-					root->right = constructOBST(optimalRoot, abs(optimalRoot - j), level + 1);
-				}
-				*/
 			}
 		}
 		return root;

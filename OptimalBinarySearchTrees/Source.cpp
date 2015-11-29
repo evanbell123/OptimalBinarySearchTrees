@@ -6,6 +6,17 @@
 
 vector<int> *readFrequencies(string fileName);
 
+/*
+Displays the following: 
+level order traversal
+program run time
+total number of frequencies
+total number of nodes
+best, average, and worst case for a find operation
+E[X^2]
+standard deviation
+sum of frequencies
+*/
 void displayOBSTInfo(OBSTComputation *obstComp);
 void displayFrequencies(vector<int> *frequencies);
 void displayQueue(queue<int> q);
@@ -33,42 +44,53 @@ int maxHeight(BinaryTree *p);
 
 void main()
 {
+	vector<OBSTComputation*> *obstComputationVector;
+	obstComputationVector = new vector<OBSTComputation*>;
+	
+	vector<string> *fileNameVector = new vector<string>;
+	string fileName;
+	char repeat;
+	
+	cout << "Please Read:" << endl;
+	cout << "Datasets must be must be in text files." << endl;
+	cout << "The first character in the file must be a space." << endl;
+	cout << "After the space comes the first frequency" << endl;
+	cout << "followed by a comma, then a space" << endl;
+	cout << "The program will stop reading if it finds a zero" << endl;
+
+	do {
+		cout << "Enter the name of the text file you want to compute (Ex. dataset1.txt):	";
+		cin >> fileName;
+		fileNameVector->push_back(fileName);
+
+		//compute lookup table and optimal binary search tree
+		obstComputationVector->push_back(new OBSTComputation(readFrequencies(fileName)));
+
+		//display results of all datasets that have been computed
+		for (int i = 0; i < obstComputationVector->size(); i++)
+		{
+			cout << fileNameVector->at(i) << endl;
+			displayOBSTInfo(obstComputationVector->at(i));
+			cout << endl;
+		}
+
+		cout << "Would you like to enter another file? Y = yes, N = no	";
+		cin >> repeat;
+
+	} while (repeat == 'Y' || repeat == 'y');
+
+	// garbage collection
+	for (int i = 0; i < obstComputationVector->size(); i++)
+	{
+		delete obstComputationVector->at(i);
+	}
+	delete obstComputationVector;
 	
 	/*
-	vector<int> *testFreqVec = readFrequencies("SampleData3.txt");
-	displayFrequencies(testFreqVec);
-	
-	OBSTComputation *testComp = new OBSTComputation(testFreqVec);
-	BinaryTree *testTree = testComp->getOBST();
-
-	LookupTable testTable = testComp->getLookupTable();
-
-	printPretty(testTree, 1, 0, cout);
-
-	displayOBSTInfo(testComp);
-
-	//testComp->displayTable();
-
-	//checkSizes(testComp->getLookupTable());
-
-	//testComp->displayNodeInfoWrapper();
-
-	
-
-
-
-
-	
-	//delete testFreqVec;
-	//delete testComp;
-	//delete testTree;
+	The following code is for testing purposes.
+	It will automatically run datasets 1-6 sequentially
 	*/
-	
-	
-	vector<OBSTComputation*> *obstComputationVector;
-
-	obstComputationVector = new vector<OBSTComputation*>;
-
+	/*
 	string fileName = "dataset";
 	string fileExt = ".txt";
 	string fullFileName;
@@ -81,7 +103,8 @@ void main()
 	and compute optimal binary search trees
 	from multiple data sets and store them
 	*/
-	
+	/*
+	vector<vector<int>*> *datasets = new vector<vector<int>*>;
 	for (int i = 0; i < TOTAL_DATASETS; i++)
 	{
 		fullFileName = fileName + intToString(i+1) + fileExt;
@@ -92,7 +115,7 @@ void main()
 	Display information about the stored
 	optimal binary search trees.
 	*/
-	
+	/*
 	for (int i = 0; i < TOTAL_DATASETS; i++)
 	{
 		cout << fileName + intToString(i + 1) + fileExt << endl;
@@ -104,10 +127,8 @@ void main()
 
 	delete obstComputationVector;
 	
-	
 	system("pause");
-
-
+	*/
 }
 
 void displayOBSTInfo(OBSTComputation *obstComp)
@@ -118,10 +139,10 @@ void displayOBSTInfo(OBSTComputation *obstComp)
 	int worstCase = maxHeight(obst) - 1;
 	double stdDev = obstComp->getStandardDeviation();
 	double eOfXSquared = obstComp->getEOfXSquared();
-	queue<int> inorderTraversal = levelOrderTraversalWrapper(obst, 7);
+	queue<int> levelOrderTraversal = levelOrderTraversalWrapper(obst, 7);
 
 	cout << "Level Order Traversal: ";
-	displayQueue(inorderTraversal);
+	displayQueue(levelOrderTraversal);
 	cout << "Program completed in " << timeTaken << " seconds" << endl
 		<< "Total Frequencies: " << obstComp->getTotalFrequencies() << endl
 		<< "Total Nodes: " << obstComp->getTotalNodes() << endl
