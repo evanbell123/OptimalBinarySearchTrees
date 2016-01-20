@@ -1,2 +1,2 @@
 # OptimalBinarySearchTrees
-Generate up to five optimal binary search trees (OBST) of identical optimal cost, as well as the second best tree. For each binary search tree, give the best, worst and average case for a FIND-operation, as well as the level-order traversal for this binary tree, but only for the top 3 levels.
+Given a list of frequencies, generate a binary search search tree such that the average cost for a FIND operation is optimal. Give the worst case, best case, average case and standard deviation for a FIND operation on the generated tree.
